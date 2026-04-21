@@ -238,14 +238,14 @@ export function blurUppercase(value: string): string {
     :host {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      width: 100%;
+      flex-grow: 1;
+      min-height: 100%;
+      box-sizing: border-box;
       background: var(--system-surfaces-surfaces-background, #ffffff);
     }
 
     .part-form-page {
       flex: 1;
-      overflow-y: auto;
       padding: 16px 24px;
 
       @media (max-width: 767px) {
@@ -315,9 +315,9 @@ export function blurUppercase(value: string): string {
     }
 
     .aw-sticky-footer {
-      flex-shrink: 0;
-      background: var(--system-surfaces-surfaces-lower, #e6e8e9);
-      border-top: 1px solid var(--system-line-divider-stroke-line-color, #cfd2d3);
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
     }
   `],
 })

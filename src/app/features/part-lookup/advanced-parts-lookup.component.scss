@@ -59,9 +59,9 @@
 }
 
 .aw-sticky-footer {
-  flex-shrink: 0;
-  background: var(--system-surfaces-surfaces-lower, #e6e8e9);
-  border-top: 1px solid var(--system-line-divider-stroke-line-color, #cfd2d3);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .filter-panel {
