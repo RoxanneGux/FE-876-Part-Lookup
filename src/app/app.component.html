@@ -1,0 +1,14 @@
+<aw-navigation-menu
+  [options]="navigationOptions()"
+  [menuItems]="menuItems()"
+  [userInformation]="userInformation()"
+  ariaLabel="Main navigation">
+  
+  <aw-top-navigation
+    [options]="topNavOptions()"
+    [navigationOptions]="searchOptions()"
+    searchPlaceholder="Search">
+  </aw-top-navigation>
+
+  <router-outlet />
+</aw-navigation-menu>

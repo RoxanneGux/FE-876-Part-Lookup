@@ -1,0 +1,118 @@
+<div class="advanced-lookup-wrapper">
+  <div class="content-container">
+    <!-- Title -->
+    <div class="sticky-header">
+      <h4 class="aw-h-4">Part Search Advanced Lookup</h4>
+    </div>
+
+    <!-- Quick Filters Row -->
+    <div class="quick-filters-row">
+      <aw-search
+        [placeholder]="'Search'"
+        [ariaLabel]="'Search parts'"
+        (searchEvent)="onSearchChange($event)">
+      </aw-search>
+
+      <aw-select-menu
+        [ariaLabel]="'Stock Location'"
+        [enableSearch]="true"
+        [singleSelectListItems]="stockLocationOptions()"
+        [enableListReset]="true"
+        (ngModelChange)="onStockLocationChange($event)">
+        <aw-form-field-label>Stock Location</aw-form-field-label>
+      </aw-select-menu>
+
+      <aw-select-menu
+        [ariaLabel]="'Part filter'"
+        [enableSearch]="true"
+        [multiSelectListItems]="partFilterOptions()"
+        [placeholder]="'Filter on ID or Description'"
+        (ngModelChange)="onPartFilterChange($event)">
+        <aw-form-field-label>Part</aw-form-field-label>
+      </aw-select-menu>
+
+      <aw-select-menu
+        [ariaLabel]="'Product Category'"
+        [enableSearch]="true"
+        [multiSelectListItems]="categoryFilterOptions()"
+        [placeholder]="'Filter on Category'"
+        (ngModelChange)="onCategoryFilterChange($event)">
+        <aw-form-field-label>Product Category</aw-form-field-label>
+      </aw-select-menu>
+
+      <div class="xref-toggle">
+        <aw-toggle
+          [ariaLabel]="'Include cross references'"
+          [ngModel]="includeXRefs()"
+          (ngModelChange)="includeXRefs.set($event)">
+        </aw-toggle>
+        <span class="aw-b-1">Include XRefs</span>
+      </div>
+
+      <button AwButtonIconOnly [buttonType]="'primary'" (click)="showFilterDrawer.set(true)" ariaLabel="Open filters" type="button">
+        <aw-icon [iconName]="'filter_list'" [iconColor]="''"></aw-icon>
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+      <aw-table
+        [attr.aria-label]="'Parts search results'"
+        [columnsDefinition]="columnsDefinition()"
+        [tableData]="tableData()"
+        [enableSingleSelection]="mode() === 'single'"
+        [tableOptions]="tableOptions"
+        (rowSelected)="onRowSelected($event)"
+        (checkboxList)="onCheckboxListChange($event)">
+      </aw-table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="aw-sticky-footer">
+    <aw-action-bar [actionsLeft]="footerActionsLeft" [actionsRight]="footerActionsRight"></aw-action-bar>
+  </div>
+
+  <!-- Side Drawer Filter Panel -->
+  @if (showFilterDrawer()) {
+    <aw-side-drawer
+      [attr.aria-label]="'Filter panel'"
+      [drawerInformation]="filterDrawerInfo"
+      [openFromRight]="true"
+      (sideDrawerClosed)="showFilterDrawer.set(false)">
+      <div class="filter-panel">
+        <div class="filter-header">
+          <span class="aw-st-1-semi-bold">Filter</span>
+          <a class="clear-all-link" (click)="clearAllFilters()" role="button" aria-label="Clear all filters">Clear All</a>
+        </div>
+
+        <aw-select-menu
+          [ariaLabel]="'Equipment Type'"
+          [enableSearch]="true"
+          [multiSelectListItems]="equipmentTypeOptions()"
+          [placeholder]="'Filter on Equipment Type'"
+          (ngModelChange)="onEquipmentTypeChange($event)">
+          <aw-form-field-label>Equipment Type</aw-form-field-label>
+        </aw-select-menu>
+
+        <aw-select-menu
+          [ariaLabel]="'Task Type'"
+          [enableSearch]="true"
+          [multiSelectListItems]="taskTypeOptions()"
+          [placeholder]="'Filter on Task Type'"
+          (ngModelChange)="onTaskTypeChange($event)">
+          <aw-form-field-label>Task Type</aw-form-field-label>
+        </aw-select-menu>
+
+        <aw-select-menu
+          [ariaLabel]="'Class Type'"
+          [enableSearch]="true"
+          [multiSelectListItems]="classTypeOptions()"
+          [placeholder]="'Filter on Class Type'"
+          (ngModelChange)="onClassTypeChange($event)">
+          <aw-form-field-label>Class Type</aw-form-field-label>
+        </aw-select-menu>
+      </div>
+    </aw-side-drawer>
+  }
+</div>
