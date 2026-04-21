@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   ActionBarLeft,
   ActionBarRight,
@@ -141,6 +142,7 @@ export function blurUppercase(value: string): string {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ReactiveFormsModule,
     AwBreadCrumbComponent,
     AwDividerComponent,
     AwFormFieldComponent,
@@ -175,8 +177,8 @@ export function blurUppercase(value: string): string {
           <aw-form-message [type]="'info'">Single select version</aw-form-message>
           <div class="field-with-buttons">
             <aw-form-field>
-              <input AwInput #partInput [value]="partId()" aria-label="Part"
-                (blur)="onPartBlur(partInput.value)"
+              <input AwInput [formControl]="partControl" aria-label="Part"
+                (blur)="onPartBlur()"
                 (input)="onPartInput($event)" />
             </aw-form-field>
             <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Open part lookup" type="button"
@@ -187,9 +189,8 @@ export function blurUppercase(value: string): string {
               (click)="openAdvancedLookup('single')">Lookup</button>
           </div>
           @if (partDescription()) {
-            <span class="aw-c-1 field-desc" [class.field-desc-error]="partDescriptionError()"
-                  [attr.role]="partDescriptionError() ? 'alert' : null"
-                  [attr.aria-live]="partDescriptionError() ? 'assertive' : 'polite'">
+            <span class="aw-c-1 field-desc"
+                  [attr.aria-live]="'polite'">
               {{ partDescription() }}
             </span>
           }
@@ -303,10 +304,6 @@ export function blurUppercase(value: string): string {
       margin-left: 2px;
     }
 
-    .field-desc-error {
-      color: var(--system-status-status-error, #c62828);
-    }
-
     .selected-parts-list {
       display: flex;
       flex-direction: column;
@@ -330,6 +327,9 @@ export class PartFormPageComponent {
   readonly partId = signal<string>('');
   readonly partDescription = signal<string>('');
   readonly partDescriptionError = signal<boolean>(false);
+
+  /** FormControl for the Part input — enables proper X-button clearing via AwInput. */
+  readonly partControl = new FormControl('');
   readonly selectedParts = signal<SimplePartRecord[]>([]);
   readonly showAdvancedLookup = signal<boolean>(false);
   readonly advancedLookupMode = signal<'single' | 'multi'>('single');
@@ -367,7 +367,7 @@ export class PartFormPageComponent {
         // Selected part → populate Part field
         const part = result as SimplePartRecord;
         if (part?.partId) {
-          this.partId.set(formatPartDisplay(part.partId, part.partDescription));
+          this.partControl.setValue(formatPartDisplay(part.partId, part.partDescription), { emitEvent: false });
           this.partDescription.set(part.partDescription);
           this.partDescriptionError.set(false);
         }
@@ -409,7 +409,7 @@ export class PartFormPageComponent {
     if (this.advancedLookupMode() === 'single') {
       const part = result as SimplePartRecord;
       if (part?.partId) {
-        this.partId.set(formatPartDisplay(part.partId, part.partDescription));
+        this.partControl.setValue(formatPartDisplay(part.partId, part.partDescription), { emitEvent: false });
         this.partDescription.set(part.partDescription);
         this.partDescriptionError.set(false);
       }
@@ -422,17 +422,18 @@ export class PartFormPageComponent {
 
   // ── Part Field Validation (Task 8.3) ──
 
-  onPartBlur(value: string): void {
-    const trimmed = (value ?? '').trim();
+  onPartBlur(): void {
+    const value = this.partControl.value ?? '';
+    const trimmed = value.trim();
     if (!trimmed) {
       this.partDescription.set('');
       this.partDescriptionError.set(false);
       return;
     }
 
-    // Uppercase the input value
+    // Uppercase the input value on blur (matches FE-528 pattern)
     const uppercased = blurUppercase(value);
-    this.partId.set(uppercased);
+    this.partControl.setValue(uppercased, { emitEvent: false });
 
     // Resolve against mock data
     const result = lookupPart(trimmed, this.mockDataService.flatPartLookup());
@@ -443,8 +444,8 @@ export class PartFormPageComponent {
   onPartInput(event: Event): void {
     const inputEl = event.target as HTMLInputElement;
     const value = inputEl?.value ?? '';
-    if (!value) {
-      // Immediately hide description when input is cleared
+    if (!value.trim()) {
+      // Immediately hide description when input is cleared (X button, select-all+delete)
       this.partDescription.set('');
       this.partDescriptionError.set(false);
     }
