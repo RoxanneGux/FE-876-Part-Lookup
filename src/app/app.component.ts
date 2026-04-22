@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {
   AwNavigationMenuComponent,
@@ -8,8 +8,10 @@ import {
   UserInformation,
   TopNavigationOptions,
   SearchOption,
-  NavigationThemeLabel
+  NavigationThemeLabel,
+  AwIconComponent,
 } from '@assetworks-llc/aw-component-lib';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -17,13 +19,19 @@ import {
   imports: [
     RouterOutlet,
     AwNavigationMenuComponent,
-    AwTopNavigationComponent
+    AwTopNavigationComponent,
+    AwIconComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  private readonly _themeService = inject(ThemeService);
+
   title = 'fe-harness';
+
+  isDarkMode = this._themeService.isDarkMode;
+  toggleTheme = () => this._themeService.toggleTheme();
 
   navigationOptions = signal<NavigationOptions>({
     defaultHomePage: '/',

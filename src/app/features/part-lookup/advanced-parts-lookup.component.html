@@ -53,10 +53,28 @@
         <span class="aw-b-1">Include XRefs</span>
       </div>
 
-      <button AwButtonIconOnly [buttonType]="'primary'" (click)="showFilterDrawer.set(true)" ariaLabel="Open filters" type="button">
+      <button AwButtonIconOnly [buttonType]="'primary'"
+        [active]="activeFilterChips().length > 0"
+        (click)="openAdvancedFilter()"
+        ariaLabel="Open filters" type="button">
         <aw-icon [iconName]="'filter_list'" [iconColor]="''"></aw-icon>
       </button>
     </div>
+
+    <!-- Filter Chips from Side Drawer -->
+    @if (activeFilterChips().length > 0) {
+      <div class="filter-chips-row d-flex flex-wrap gap-3 ps-3 pt-2 pe-3 pb-4 mb-2">
+        @for (chip of activeFilterChips(); track chip) {
+          <aw-chip
+            [label]="chip"
+            [variant]="'outline'"
+            [id]="chip"
+            [showRemoveButton]="true"
+            (removed)="removeFilterChip(chip)">
+          </aw-chip>
+        }
+      </div>
+    }
 
     <!-- Table -->
     <div class="table-container">
@@ -76,47 +94,43 @@
   <div class="aw-sticky-footer">
     <aw-action-bar [actionsLeft]="footerActionsLeft" [actionsRight]="footerActionsRight"></aw-action-bar>
   </div>
-
-  <!-- Side Drawer Filter Panel -->
-  @if (showFilterDrawer()) {
-    <aw-side-drawer
-      [attr.aria-label]="'Filter panel'"
-      [drawerInformation]="filterDrawerInfo"
-      [openFromRight]="true"
-      (sideDrawerClosed)="showFilterDrawer.set(false)">
-      <div class="filter-panel">
-        <div class="filter-header">
-          <span class="aw-st-1-semi-bold">Filter</span>
-          <a class="clear-all-link" (click)="clearAllFilters()" role="button" aria-label="Clear all filters">Clear All</a>
-        </div>
-
-        <aw-select-menu
-          [ariaLabel]="'Equipment Type'"
-          [enableSearch]="true"
-          [multiSelectListItems]="equipmentTypeOptions()"
-          [placeholder]="'Filter on Equipment Type'"
-          (ngModelChange)="onEquipmentTypeChange($event)">
-          <aw-form-field-label>Equipment Type</aw-form-field-label>
-        </aw-select-menu>
-
-        <aw-select-menu
-          [ariaLabel]="'Task Type'"
-          [enableSearch]="true"
-          [multiSelectListItems]="taskTypeOptions()"
-          [placeholder]="'Filter on Task Type'"
-          (ngModelChange)="onTaskTypeChange($event)">
-          <aw-form-field-label>Task Type</aw-form-field-label>
-        </aw-select-menu>
-
-        <aw-select-menu
-          [ariaLabel]="'Class Type'"
-          [enableSearch]="true"
-          [multiSelectListItems]="classTypeOptions()"
-          [placeholder]="'Filter on Class Type'"
-          (ngModelChange)="onClassTypeChange($event)">
-          <aw-form-field-label>Class Type</aw-form-field-label>
-        </aw-select-menu>
-      </div>
-    </aw-side-drawer>
-  }
 </div>
+
+<!-- Side Drawer Filter Panel — always in DOM, opened programmatically -->
+<aw-side-drawer
+  [attr.aria-label]="'Filter panel'"
+  [drawerInformation]="filterDrawerInfo()"
+  [openFromRight]="true"
+  #sideDrawerFilter>
+  <div class="filter-panel">
+    <aw-select-menu
+      [ariaLabel]="'Equipment Type'"
+      [enableSearch]="true"
+      [enableListReset]="true"
+      [multiSelectListItems]="equipmentTypeOptions()"
+      [placeholder]="'Filter on Equipment Type'"
+      [formControl]="equipmentTypeControl">
+      <aw-form-field-label>Equipment Type</aw-form-field-label>
+    </aw-select-menu>
+
+    <aw-select-menu
+      [ariaLabel]="'Task Type'"
+      [enableSearch]="true"
+      [enableListReset]="true"
+      [multiSelectListItems]="taskTypeOptions()"
+      [placeholder]="'Filter on Task Type'"
+      [formControl]="taskTypeControl">
+      <aw-form-field-label>Task Type</aw-form-field-label>
+    </aw-select-menu>
+
+    <aw-select-menu
+      [ariaLabel]="'Class Type'"
+      [enableSearch]="true"
+      [enableListReset]="true"
+      [multiSelectListItems]="classTypeOptions()"
+      [placeholder]="'Filter on Class Type'"
+      [formControl]="classTypeControl">
+      <aw-form-field-label>Class Type</aw-form-field-label>
+    </aw-select-menu>
+  </div>
+</aw-side-drawer>

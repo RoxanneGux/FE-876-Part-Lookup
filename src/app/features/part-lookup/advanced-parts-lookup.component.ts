@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   ActionBarLeft,
   ActionBarRight,
   AwActionBarComponent,
   AwButtonIconOnlyDirective,
+  AwChipComponent,
   AwFormFieldLabelComponent,
   AwIconComponent,
   AwSearchComponent,
@@ -18,18 +19,11 @@ import {
   TableCellInput,
   TableCellTypes,
   TableOptions,
-  TableRow,
 } from '@assetworks-llc/aw-component-lib';
 
 import { MockDataService } from '../../services/mock-data.service';
 import { ExtendedPartRecord } from './part-lookup.models';
 
-/**
- * Advanced Parts Lookup — full-width slide-in panel with quick filters,
- * extended table columns, and a side drawer filter panel.
- *
- * Supports both single-select (radio) and multi-select (checkbox) modes via the `mode` input.
- */
 @Component({
   selector: 'app-advanced-parts-lookup',
   standalone: true,
@@ -39,6 +33,7 @@ import { ExtendedPartRecord } from './part-lookup.models';
     ReactiveFormsModule,
     AwActionBarComponent,
     AwButtonIconOnlyDirective,
+    AwChipComponent,
     AwFormFieldLabelComponent,
     AwIconComponent,
     AwSearchComponent,
@@ -52,91 +47,87 @@ import { ExtendedPartRecord } from './part-lookup.models';
 })
 export class AdvancedPartsLookupComponent {
 
-  /** Selection mode: 'single' for radio buttons, 'multi' for checkboxes. */
   readonly mode = input<'single' | 'multi'>('single');
-
-  /** Emits selected part(s) or null on cancel. */
   readonly close = output<any>();
 
   private readonly mockDataService = inject(MockDataService);
 
-  // ── Quick Filter Signals ──
+  // ── Side Drawer ViewChild ──
 
-  /** FormControl for the search bar — aw-search is a ControlValueAccessor. */
+  readonly sideDrawerFilter = viewChild<AwSideDrawerComponent>('sideDrawerFilter');
+
+  // ── Quick Filter FormControls ──
+
   readonly searchControl = new FormControl('');
-
-  /** FormControl for the Part multi-select filter. */
   readonly partFilterControl = new FormControl<any[]>([]);
-
-  /** FormControl for the Product Category multi-select filter. */
   readonly categoryFilterControl = new FormControl<any[]>([]);
 
-  readonly searchText = signal<string>('');
+  // ── Side Drawer Filter FormControls ──
 
-  constructor() {
-    this.searchControl.valueChanges.subscribe(val => {
-      this.searchText.set(val || '');
-    });
-    this.partFilterControl.valueChanges.subscribe(val => {
-      this.partFilter.set(this.extractMultiSelectValues(val));
-    });
-    this.categoryFilterControl.valueChanges.subscribe(val => {
-      this.categoryFilter.set(this.extractMultiSelectValues(val));
-    });
-  }
+  readonly equipmentTypeControl = new FormControl<any[]>([]);
+  readonly taskTypeControl = new FormControl<any[]>([]);
+  readonly classTypeControl = new FormControl<any[]>([]);
+
+  // ── Filter Signals ──
+
+  readonly searchText = signal<string>('');
   readonly stockLocation = signal<string>('LOC-MAIN');
   readonly partFilter = signal<string[]>([]);
   readonly categoryFilter = signal<string[]>([]);
   readonly includeXRefs = signal<boolean>(true);
-  readonly showFilterDrawer = signal<boolean>(false);
-
-  // ── Side Drawer Filter Signals ──
-
   readonly equipmentTypeFilter = signal<string[]>([]);
   readonly taskTypeFilter = signal<string[]>([]);
   readonly classTypeFilter = signal<string[]>([]);
+
+  // ── Filter Chips ──
+
+  readonly activeFilterChips = signal<string[]>([]);
 
   // ── Selection State ──
 
   private selectedSingleRow = signal<any>(null);
   private selectedMultiRows = signal<any[]>([]);
 
+  constructor() {
+    this.searchControl.valueChanges.subscribe(val => this.searchText.set(val || ''));
+    this.partFilterControl.valueChanges.subscribe(val => this.partFilter.set(this.extractMultiSelectValues(val)));
+    this.categoryFilterControl.valueChanges.subscribe(val => this.categoryFilter.set(this.extractMultiSelectValues(val)));
+    this.equipmentTypeControl.valueChanges.subscribe(val => {
+      this.equipmentTypeFilter.set(this.extractMultiSelectValues(val));
+      this.updateFilterChips();
+    });
+    this.taskTypeControl.valueChanges.subscribe(val => {
+      this.taskTypeFilter.set(this.extractMultiSelectValues(val));
+      this.updateFilterChips();
+    });
+    this.classTypeControl.valueChanges.subscribe(val => {
+      this.classTypeFilter.set(this.extractMultiSelectValues(val));
+      this.updateFilterChips();
+    });
+  }
+
   // ── Computed Filter Options ──
 
-  readonly stockLocationOptions = computed<SingleSelectOption[]>(() =>
-    this.mockDataService.stockLocations()
-  );
+  readonly stockLocationOptions = computed<SingleSelectOption[]>(() => this.mockDataService.stockLocations());
 
   readonly partFilterOptions = computed<MultiSelectOption[]>(() =>
     this.mockDataService.extendedParts().map(p => ({
-      label: `(${p.partId}) ${p.partDescription}`,
+      label: '(' + p.partId + ') ' + p.partDescription,
       value: p.partId,
       checked: false,
     }))
   );
 
-  readonly categoryFilterOptions = computed<MultiSelectOption[]>(() =>
-    this.mockDataService.productCategories()
-  );
-
-  readonly equipmentTypeOptions = computed<MultiSelectOption[]>(() =>
-    this.mockDataService.equipmentTypes()
-  );
-
-  readonly taskTypeOptions = computed<MultiSelectOption[]>(() =>
-    this.mockDataService.taskTypes()
-  );
-
-  readonly classTypeOptions = computed<MultiSelectOption[]>(() =>
-    this.mockDataService.classTypes()
-  );
+  readonly categoryFilterOptions = computed<MultiSelectOption[]>(() => this.mockDataService.productCategories());
+  readonly equipmentTypeOptions = computed<MultiSelectOption[]>(() => this.mockDataService.equipmentTypes());
+  readonly taskTypeOptions = computed<MultiSelectOption[]>(() => this.mockDataService.taskTypes());
+  readonly classTypeOptions = computed<MultiSelectOption[]>(() => this.mockDataService.classTypes());
 
   // ── Computed Table Data ──
 
   readonly tableData = computed<ExtendedPartRecord[]>(() => {
     let data = this.mockDataService.extendedParts();
 
-    // Search text filter — across multiple fields
     const search = this.searchText().toLowerCase().trim();
     if (search) {
       data = data.filter(p =>
@@ -152,34 +143,29 @@ export class AdvancedPartsLookupComponent {
       );
     }
 
-    // Part filter — by partId
     const partIds = this.partFilter();
-    if (partIds.length > 0) {
-      data = data.filter(p => partIds.includes(p.partId));
-    }
+    if (partIds.length > 0) data = data.filter(p => partIds.includes(p.partId));
 
-    // Category filter — by categoryId
     const catIds = this.categoryFilter();
-    if (catIds.length > 0) {
-      data = data.filter(p => catIds.includes(p.categoryId));
-    }
+    if (catIds.length > 0) data = data.filter(p => catIds.includes(p.categoryId));
 
-    // Stock location filter — by stockLocationId
     const loc = this.stockLocation();
-    if (loc) {
-      data = data.filter(p => p.stockLocationId === loc);
-    }
+    if (loc) data = data.filter(p => p.stockLocationId === loc);
 
-    // equipmentType, taskType, classType are mock filters —
-    // parts don't have those fields, so they don't actually filter the data.
-    // The UI still responds to selections for demonstration purposes.
+    const eqTypes = this.equipmentTypeFilter();
+    if (eqTypes.length > 0) data = data.filter(p => eqTypes.includes(p.equipmentTypeId));
+
+    const tskTypes = this.taskTypeFilter();
+    if (tskTypes.length > 0) data = data.filter(p => tskTypes.includes(p.taskTypeId));
+
+    const clsTypes = this.classTypeFilter();
+    if (clsTypes.length > 0) data = data.filter(p => clsTypes.includes(p.classTypeId));
 
     return data;
   });
 
   // ── Column Definitions ──
 
-  /** Base data columns (shared between single and multi modes). */
   private readonly dataColumns: TableCellInput[] = [
     {
       type: TableCellTypes.Custom, key: 'imageUrl', label: 'Image', sort: false, align: 'center',
@@ -215,18 +201,12 @@ export class AdvancedPartsLookupComponent {
     { type: TableCellTypes.Title, key: 'manufacturer', label: 'Manufacturer', sort: true },
   ];
 
-  /** Column definitions — includes checkbox column for multi-select mode. */
   readonly columnsDefinition = computed<TableCellInput[]>(() => {
     if (this.mode() === 'multi') {
-      return [
-        { type: TableCellTypes.Checkbox, key: 'selected', label: '' },
-        ...this.dataColumns,
-      ];
+      return [{ type: TableCellTypes.Checkbox, key: 'selected', label: '' }, ...this.dataColumns];
     }
     return this.dataColumns;
   });
-
-  // ── Table Options ──
 
   readonly tableOptions: TableOptions = {
     noDataPlaceholder: 'No results returned. Adjust quick filters and/or side filter.',
@@ -244,9 +224,12 @@ export class AdvancedPartsLookupComponent {
 
   // ── Side Drawer Info ──
 
-  readonly filterDrawerInfo: SideDrawerInformation = {
+  readonly filterDrawerInfo = computed<SideDrawerInformation>(() => ({
     title: 'Filter',
-  };
+    userActions: [
+      { label: 'Clear all', buttonType: 'secondary', action: () => this.clearAllFilters() },
+    ],
+  }));
 
   // ── Quick Filter Handlers ──
 
@@ -255,27 +238,61 @@ export class AdvancedPartsLookupComponent {
     this.stockLocation.set(value);
   }
 
-  // ── Side Drawer Filter Handlers ──
+  // ── Side Drawer Methods ──
 
-  onEquipmentTypeChange(event: any): void {
-    const values = this.extractMultiSelectValues(event);
-    this.equipmentTypeFilter.set(values);
-  }
-
-  onTaskTypeChange(event: any): void {
-    const values = this.extractMultiSelectValues(event);
-    this.taskTypeFilter.set(values);
-  }
-
-  onClassTypeChange(event: any): void {
-    const values = this.extractMultiSelectValues(event);
-    this.classTypeFilter.set(values);
+  openAdvancedFilter(): void {
+    this.sideDrawerFilter()?.openSideDrawer();
   }
 
   clearAllFilters(): void {
-    this.equipmentTypeFilter.set([]);
-    this.taskTypeFilter.set([]);
-    this.classTypeFilter.set([]);
+    this.equipmentTypeControl.setValue([], { emitEvent: true });
+    this.taskTypeControl.setValue([], { emitEvent: true });
+    this.classTypeControl.setValue([], { emitEvent: true });
+  }
+
+  // ── Filter Chips ──
+
+  private updateFilterChips(): void {
+    const chips: string[] = [];
+    for (const val of this.equipmentTypeFilter()) {
+      const opt = this.mockDataService.equipmentTypes().find(o => o.value === val);
+      chips.push('Equipment Type: ' + (opt?.label ?? val));
+    }
+    for (const val of this.taskTypeFilter()) {
+      const opt = this.mockDataService.taskTypes().find(o => o.value === val);
+      chips.push('Task Type: ' + (opt?.label ?? val));
+    }
+    for (const val of this.classTypeFilter()) {
+      const opt = this.mockDataService.classTypes().find(o => o.value === val);
+      chips.push('Class Type: ' + (opt?.label ?? val));
+    }
+    this.activeFilterChips.set(chips);
+  }
+
+  removeFilterChip(chip: string): void {
+    if (chip.startsWith('Equipment Type: ')) {
+      const label = chip.replace('Equipment Type: ', '');
+      const opt = this.mockDataService.equipmentTypes().find(o => o.label === label);
+      if (opt) {
+        this.equipmentTypeFilter.update(vals => vals.filter(v => v !== opt.value));
+        this.equipmentTypeControl.setValue([], { emitEvent: false });
+      }
+    } else if (chip.startsWith('Task Type: ')) {
+      const label = chip.replace('Task Type: ', '');
+      const opt = this.mockDataService.taskTypes().find(o => o.label === label);
+      if (opt) {
+        this.taskTypeFilter.update(vals => vals.filter(v => v !== opt.value));
+        this.taskTypeControl.setValue([], { emitEvent: false });
+      }
+    } else if (chip.startsWith('Class Type: ')) {
+      const label = chip.replace('Class Type: ', '');
+      const opt = this.mockDataService.classTypes().find(o => o.label === label);
+      if (opt) {
+        this.classTypeFilter.update(vals => vals.filter(v => v !== opt.value));
+        this.classTypeControl.setValue([], { emitEvent: false });
+      }
+    }
+    this.updateFilterChips();
   }
 
   // ── Selection Handlers ──
@@ -308,9 +325,7 @@ export class AdvancedPartsLookupComponent {
     if (Array.isArray(event)) {
       return event.map((item: any) => typeof item === 'string' ? item : item?.value ?? '').filter(Boolean);
     }
-    if (typeof event === 'string') {
-      return event ? [event] : [];
-    }
+    if (typeof event === 'string') return event ? [event] : [];
     return [];
   }
 }

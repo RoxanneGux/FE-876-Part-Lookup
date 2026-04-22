@@ -12,6 +12,9 @@ export interface ExtendedPartRecord extends SimplePartRecord {
   categoryId: string;
   categoryDescription: string;
   stockLocationId: string;
+  equipmentTypeId: string;
+  taskTypeId: string;
+  classTypeId: string;
   onHand: number;
   onOrder: number;
   committed: number;

@@ -37,6 +37,7 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap-utilities.min.css",
               "src/styles.scss",
               "./node_modules/@assetworks-llc/aw-component-lib/styles/styles.scss"
             ],
