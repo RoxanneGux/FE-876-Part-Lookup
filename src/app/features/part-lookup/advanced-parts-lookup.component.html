@@ -44,14 +44,12 @@
         <aw-form-field-label>Product Category</aw-form-field-label>
       </aw-select-menu>
 
-      <div class="xref-toggle">
-        <aw-toggle
-          [ariaLabel]="'Include cross references'"
-          [ngModel]="includeXRefs()"
-          (ngModelChange)="includeXRefs.set($event)">
-        </aw-toggle>
-        <span class="aw-b-1">Include XRefs</span>
-      </div>
+      <aw-select-menu
+        [ariaLabel]="'Cross Reference Filter'"
+        [singleSelectListItems]="xrefFilterOptions"
+        [ngModel]="'include-xref'"
+        (ngModelChange)="onXrefFilterChange($event)">
+      </aw-select-menu>
 
       <button AwButtonIconOnly [buttonType]="'primary'"
         [active]="activeFilterChips().length > 0"
@@ -65,6 +63,7 @@
     @if (activeFilterChips().length > 0) {
       <div class="filter-chips-row d-flex flex-wrap gap-3 ps-3 pt-2 pe-3 pb-2">
         @for (chip of activeFilterChips(); track chip) {
+          <!-- CCL bug: [readonly]="true" hides the remove button. Using default (false) until fixed. -->
           <aw-chip
             [label]="chip"
             [variant]="'outline'"

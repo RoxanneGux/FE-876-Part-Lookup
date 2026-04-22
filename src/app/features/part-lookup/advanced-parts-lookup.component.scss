@@ -8,6 +8,16 @@
   left: 0;
   z-index: 100;
   background: var(--system-surfaces-surfaces-lower, #e6e8e9);
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .advanced-lookup-wrapper {

@@ -12,7 +12,6 @@ import {
   AwSelectMenuComponent,
   AwSideDrawerComponent,
   AwTableComponent,
-  AwToggleComponent,
   MultiSelectOption,
   SideDrawerInformation,
   SingleSelectOption,
@@ -40,7 +39,6 @@ import { ExtendedPartRecord } from './part-lookup.models';
     AwSelectMenuComponent,
     AwSideDrawerComponent,
     AwTableComponent,
-    AwToggleComponent,
   ],
   templateUrl: './advanced-parts-lookup.component.html',
   styleUrl: './advanced-parts-lookup.component.scss',
@@ -74,7 +72,16 @@ export class AdvancedPartsLookupComponent {
   readonly stockLocation = signal<string>('LOC-MAIN');
   readonly partFilter = signal<string[]>([]);
   readonly categoryFilter = signal<string[]>([]);
-  readonly includeXRefs = signal<boolean>(true);
+  readonly includeXRefs = signal<string>('include-xref');
+
+  // ── Xref Filter Options ──
+
+  readonly xrefFilterOptions: SingleSelectOption[] = [
+    { label: 'Include Xref', value: 'include-xref' },
+    { label: 'Only Xref', value: 'only-xref' },
+    { label: 'No Xref', value: 'no-xref' },
+    { label: 'Manuf Part Only', value: 'manuf-part-only' },
+  ];
   readonly equipmentTypeFilter = signal<string[]>([]);
   readonly taskTypeFilter = signal<string[]>([]);
   readonly classTypeFilter = signal<string[]>([]);
@@ -236,6 +243,11 @@ export class AdvancedPartsLookupComponent {
   onStockLocationChange(event: any): void {
     const value = typeof event === 'string' ? event : (event?.value ?? '');
     this.stockLocation.set(value);
+  }
+
+  onXrefFilterChange(event: any): void {
+    const value = typeof event === 'string' ? event : (event?.value ?? 'include-xref');
+    this.includeXRefs.set(value);
   }
 
   // ── Side Drawer Methods ──
