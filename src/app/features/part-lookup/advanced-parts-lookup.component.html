@@ -27,18 +27,20 @@
       <aw-select-menu
         [ariaLabel]="'Part filter'"
         [enableSearch]="true"
+        [enableListReset]="true"
         [multiSelectListItems]="partFilterOptions()"
         [placeholder]="'Filter on ID or Description'"
-        (ngModelChange)="onPartFilterChange($event)">
+        [formControl]="partFilterControl">
         <aw-form-field-label>Part</aw-form-field-label>
       </aw-select-menu>
 
       <aw-select-menu
         [ariaLabel]="'Product Category'"
         [enableSearch]="true"
+        [enableListReset]="true"
         [multiSelectListItems]="categoryFilterOptions()"
         [placeholder]="'Filter on Category'"
-        (ngModelChange)="onCategoryFilterChange($event)">
+        [formControl]="categoryFilterControl">
         <aw-form-field-label>Product Category</aw-form-field-label>
       </aw-select-menu>
 

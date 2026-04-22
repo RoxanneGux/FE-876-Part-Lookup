@@ -65,11 +65,23 @@ export class AdvancedPartsLookupComponent {
   /** FormControl for the search bar — aw-search is a ControlValueAccessor. */
   readonly searchControl = new FormControl('');
 
+  /** FormControl for the Part multi-select filter. */
+  readonly partFilterControl = new FormControl<any[]>([]);
+
+  /** FormControl for the Product Category multi-select filter. */
+  readonly categoryFilterControl = new FormControl<any[]>([]);
+
   readonly searchText = signal<string>('');
 
   constructor() {
     this.searchControl.valueChanges.subscribe(val => {
       this.searchText.set(val || '');
+    });
+    this.partFilterControl.valueChanges.subscribe(val => {
+      this.partFilter.set(this.extractMultiSelectValues(val));
+    });
+    this.categoryFilterControl.valueChanges.subscribe(val => {
+      this.categoryFilter.set(this.extractMultiSelectValues(val));
     });
   }
   readonly stockLocation = signal<string>('LOC-MAIN');
@@ -241,16 +253,6 @@ export class AdvancedPartsLookupComponent {
   onStockLocationChange(event: any): void {
     const value = typeof event === 'string' ? event : (event?.value ?? '');
     this.stockLocation.set(value);
-  }
-
-  onPartFilterChange(event: any): void {
-    const values = this.extractMultiSelectValues(event);
-    this.partFilter.set(values);
-  }
-
-  onCategoryFilterChange(event: any): void {
-    const values = this.extractMultiSelectValues(event);
-    this.categoryFilter.set(values);
   }
 
   // ── Side Drawer Filter Handlers ──
