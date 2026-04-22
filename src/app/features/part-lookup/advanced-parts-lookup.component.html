@@ -18,6 +18,8 @@
         [enableSearch]="true"
         [singleSelectListItems]="stockLocationOptions()"
         [enableListReset]="true"
+        [placeholder]="'Filter on Location'"
+        [ngModel]="stockLocation()"
         (ngModelChange)="onStockLocationChange($event)">
         <aw-form-field-label>Stock Location</aw-form-field-label>
       </aw-select-menu>

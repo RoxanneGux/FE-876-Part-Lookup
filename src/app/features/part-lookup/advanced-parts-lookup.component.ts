@@ -72,7 +72,7 @@ export class AdvancedPartsLookupComponent {
       this.searchText.set(val || '');
     });
   }
-  readonly stockLocation = signal<string>('');
+  readonly stockLocation = signal<string>('LOC-MAIN');
   readonly partFilter = signal<string[]>([]);
   readonly categoryFilter = signal<string[]>([]);
   readonly includeXRefs = signal<boolean>(true);
@@ -152,7 +152,13 @@ export class AdvancedPartsLookupComponent {
       data = data.filter(p => catIds.includes(p.categoryId));
     }
 
-    // stockLocation, equipmentType, taskType, classType are mock filters —
+    // Stock location filter — by stockLocationId
+    const loc = this.stockLocation();
+    if (loc) {
+      data = data.filter(p => p.stockLocationId === loc);
+    }
+
+    // equipmentType, taskType, classType are mock filters —
     // parts don't have those fields, so they don't actually filter the data.
     // The UI still responds to selections for demonstration purposes.
 
@@ -188,6 +194,7 @@ export class AdvancedPartsLookupComponent {
         template: '<div><span class="aw-b-1">' + (data[0] || '') + '</span><br><span class="aw-c-1" style="color:var(--system-text-text-secondary)">' + (data[1] || '') + '</span></div>',
       }),
     },
+    { type: TableCellTypes.Title, key: 'stockLocationId', label: 'Stock Location', sort: true },
     { type: TableCellTypes.Title, key: 'onHand', label: 'On Hand', sort: true },
     { type: TableCellTypes.Title, key: 'onOrder', label: 'On Order', sort: true },
     { type: TableCellTypes.Title, key: 'committed', label: 'Committed', sort: true },
