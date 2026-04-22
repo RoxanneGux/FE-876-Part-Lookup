@@ -202,7 +202,7 @@ export function blurUppercase(value: string): string {
           <aw-form-message [type]="'info'">Multi select version</aw-form-message>
           <div class="field-with-buttons">
             <aw-form-field>
-              <input AwInput aria-label="Part multi-select" />
+              <input AwInput [formControl]="partsControl" aria-label="Part multi-select" />
             </aw-form-field>
             <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Open parts lookup" type="button"
               (click)="openSimplePartsLookup()">
@@ -330,6 +330,10 @@ export class PartFormPageComponent {
 
   /** FormControl for the Part input — enables proper X-button clearing via AwInput. */
   readonly partControl = new FormControl('');
+
+  /** FormControl for the Parts (multi-select) input — displays selected parts as delimiter-separated string. */
+  readonly partsControl = new FormControl('');
+
   readonly selectedParts = signal<SimplePartRecord[]>([]);
   readonly showAdvancedLookup = signal<boolean>(false);
   readonly advancedLookupMode = signal<'single' | 'multi'>('single');
@@ -387,9 +391,9 @@ export class PartFormPageComponent {
           this.openAdvancedLookup(result.mode ?? 'multi');
           return;
         }
-        // Multi-select result → set selectedParts
+        // Multi-select result → set selectedParts and write to field
         if (Array.isArray(result)) {
-          this.selectedParts.set(result);
+          this.writeBackSelectedParts(result);
         }
       }
     );
@@ -415,7 +419,7 @@ export class PartFormPageComponent {
       }
     } else {
       if (Array.isArray(result)) {
-        this.selectedParts.set(result);
+        this.writeBackSelectedParts(result);
       }
     }
   }
@@ -452,6 +456,13 @@ export class PartFormPageComponent {
   }
 
   // ── Action Bar Handlers ──
+
+  /** Formats selected parts and writes to the partsControl field. */
+  private writeBackSelectedParts(parts: SimplePartRecord[]): void {
+    this.selectedParts.set(parts);
+    const formatted = parts.map(p => formatPartDisplay(p.partId, p.partDescription)).join('; ');
+    this.partsControl.setValue(formatted, { emitEvent: false });
+  }
 
   onCancel(): void {
     console.log('Cancel clicked');
