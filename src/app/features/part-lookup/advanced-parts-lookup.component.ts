@@ -367,6 +367,8 @@ export class AdvancedPartsLookupComponent {
       search.searchControl.setValue(mockScannedId);
       search.selectedValue.set({ label: mockScannedId });
     }
+    // TODO (nice-to-have): After scan, auto-select the matching row in the table
+    // so the user can immediately click "Select" without manually selecting.
   }
 
   closeCameraPreview(): void {

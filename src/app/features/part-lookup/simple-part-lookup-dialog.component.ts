@@ -327,6 +327,10 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
       search.searchControl.setValue(mockScannedId);
       search.selectedValue.set({ label: mockScannedId });
     }
+    // TODO (nice-to-have): After scan, auto-select the matching row in the table
+    // so the user can immediately click "Add" without manually selecting.
+    // This requires programmatically setting aw-dialog's selectedSingleRow or
+    // triggering a checkbox selection on the matching row via the CCL table API.
   }
 
   closeCameraPreview(): void {
