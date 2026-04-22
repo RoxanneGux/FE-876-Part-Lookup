@@ -12,22 +12,29 @@
 
 .advanced-lookup-wrapper {
   flex: 1;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: 16px 24px 0;
 }
 
 .content-container {
-  max-width: 2000px;
-  margin: 0 auto;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  max-width: 2000px;
+  margin: 0 auto;
+  width: 100%;
+  min-height: 0;
 }
 
 .sticky-header {
+  flex-shrink: 0;
   padding-bottom: 8px;
 }
 
 .quick-filters-row {
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -54,14 +61,12 @@
 
 .table-container {
   flex: 1;
+  overflow-y: auto;
   overflow-x: auto;
-  padding-bottom: 80px;
 }
 
 .aw-sticky-footer {
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
+  flex-shrink: 0;
 }
 
 .filter-panel {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   ActionBarLeft,
   ActionBarRight,
@@ -36,6 +36,7 @@ import { ExtendedPartRecord } from './part-lookup.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     AwActionBarComponent,
     AwButtonIconOnlyDirective,
     AwFormFieldLabelComponent,
@@ -61,7 +62,16 @@ export class AdvancedPartsLookupComponent {
 
   // ── Quick Filter Signals ──
 
+  /** FormControl for the search bar — aw-search is a ControlValueAccessor. */
+  readonly searchControl = new FormControl('');
+
   readonly searchText = signal<string>('');
+
+  constructor() {
+    this.searchControl.valueChanges.subscribe(val => {
+      this.searchText.set(val || '');
+    });
+  }
   readonly stockLocation = signal<string>('');
   readonly partFilter = signal<string[]>([]);
   readonly categoryFilter = signal<string[]>([]);
@@ -220,11 +230,6 @@ export class AdvancedPartsLookupComponent {
   };
 
   // ── Quick Filter Handlers ──
-
-  onSearchChange(event: any): void {
-    const value = typeof event === 'string' ? event : (event?.target?.value ?? '');
-    this.searchText.set(value);
-  }
 
   onStockLocationChange(event: any): void {
     const value = typeof event === 'string' ? event : (event?.value ?? '');

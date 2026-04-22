@@ -8,9 +8,9 @@
     <!-- Quick Filters Row -->
     <div class="quick-filters-row">
       <aw-search
+        [formControl]="searchControl"
         [placeholder]="'Search'"
-        [ariaLabel]="'Search parts'"
-        (searchEvent)="onSearchChange($event)">
+        [ariaLabel]="'Search parts'">
       </aw-search>
 
       <aw-select-menu
