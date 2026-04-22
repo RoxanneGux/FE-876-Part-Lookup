@@ -59,6 +59,11 @@
   aw-select-menu {
     min-width: 180px;
     max-width: 240px;
+    flex: 1;
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+    }
   }
 }
 
