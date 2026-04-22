@@ -15,7 +15,7 @@ All data in this harness is mock. No API calls are made. This guide documents ev
 | `src/app/services/mock-data.service.ts` | Provides all part data and filter dropdown options via Angular signals |
 | `src/app/features/part-lookup/part-lookup.models.ts` | Defines `SimplePartRecord` and `ExtendedPartRecord` interfaces |
 
-## Simple Parts (14 records)
+## Simple Parts (20 records)
 
 Flat list of parts displayed in the Simple Part Lookup Dialog.
 
@@ -35,8 +35,14 @@ Flat list of parts displayed in the Simple Part Lookup Dialog.
 | PRT-FBK-003 | Front Caliper Left | Caliper | FC-XREF-703 | $155.00 |
 | PRT-ELEC-001 | Alternator 12V 150A | Electrical | ALT-XREF-801 | $210.00 |
 | PRT-ELEC-002 | Starter Motor Rebuilt | Starter | SM-XREF-802 | $175.50 |
+| PRT-HVY-001 | Hydraulic Cylinder Ram | Hydraulic | HC-XREF-901 | $485.00 |
+| PRT-HVY-002 | Track Roller Assembly | Track | TR-XREF-902 | $320.00 |
+| PRT-HVY-003 | Bucket Tooth Pin Set | Bucket | BT-XREF-903 | $78.50 |
+| PRT-GEN-001 | Generator Voltage Regulator | Regulator | GV-XREF-1001 | $195.00 |
+| PRT-GEN-002 | Fuel Injector Nozzle | Injector | FI-XREF-1002 | $142.75 |
+| PRT-GEN-003 | Radiator Cooling Fan | Cooling | RC-XREF-1003 | $265.00 |
 
-## Extended Parts (14 records)
+## Extended Parts (20 records)
 
 Extended part records displayed in the Advanced Parts Lookup table. Each record includes all simple part fields plus inventory and manufacturer data.
 
@@ -56,6 +62,12 @@ Extended part records displayed in the Advanced Parts Lookup table. Each record 
 | PRT-FBK-003 | CAT-BRK | Brake Components | 4 | 6 | 0 | 0 | MFR-FC-703 | Cardone |
 | PRT-ELEC-001 | CAT-ELEC | Electrical Components | 10 | 3 | 2 | 0 | MFR-ALT-801 | Denso |
 | PRT-ELEC-002 | CAT-ELEC | Electrical Components | 7 | 5 | 1 | 0 | MFR-SM-802 | Remy |
+| PRT-HVY-001 | CAT-ENG | Engine Components | 5 | 3 | 1 | 0 | MFR-HC-901 | Parker |
+| PRT-HVY-002 | CAT-ENG | Engine Components | 12 | 6 | 2 | 1 | MFR-TR-902 | Caterpillar |
+| PRT-HVY-003 | CAT-ENG | Engine Components | 48 | 20 | 8 | 0 | MFR-BT-903 | Komatsu |
+| PRT-GEN-001 | CAT-ELEC | Electrical Components | 9 | 4 | 2 | 0 | MFR-GV-1001 | Cummins |
+| PRT-GEN-002 | CAT-ENG | Engine Components | 15 | 8 | 3 | 1 | MFR-FI-1002 | Bosch |
+| PRT-GEN-003 | CAT-ENG | Engine Components | 3 | 2 | 0 | 0 | MFR-RC-1003 | Denso |
 
 ## Filter Dropdown Data
 

@@ -19,6 +19,12 @@ const SIMPLE_PARTS: SimplePartRecord[] = [
   { partId: 'PRT-FBK-003', partDescription: 'Front Caliper Left', keyword: 'Caliper', crossReference: 'FC-XREF-703', cost: 155.00 },
   { partId: 'PRT-ELEC-001', partDescription: 'Alternator 12V 150A', keyword: 'Electrical', crossReference: 'ALT-XREF-801', cost: 210.00 },
   { partId: 'PRT-ELEC-002', partDescription: 'Starter Motor Rebuilt', keyword: 'Starter', crossReference: 'SM-XREF-802', cost: 175.50 },
+  { partId: 'PRT-HVY-001', partDescription: 'Hydraulic Cylinder Ram', keyword: 'Hydraulic', crossReference: 'HC-XREF-901', cost: 485.00 },
+  { partId: 'PRT-HVY-002', partDescription: 'Track Roller Assembly', keyword: 'Track', crossReference: 'TR-XREF-902', cost: 320.00 },
+  { partId: 'PRT-HVY-003', partDescription: 'Bucket Tooth Pin Set', keyword: 'Bucket', crossReference: 'BT-XREF-903', cost: 78.50 },
+  { partId: 'PRT-GEN-001', partDescription: 'Generator Voltage Regulator', keyword: 'Regulator', crossReference: 'GV-XREF-1001', cost: 195.00 },
+  { partId: 'PRT-GEN-002', partDescription: 'Fuel Injector Nozzle', keyword: 'Injector', crossReference: 'FI-XREF-1002', cost: 142.75 },
+  { partId: 'PRT-GEN-003', partDescription: 'Radiator Cooling Fan', keyword: 'Cooling', crossReference: 'RC-XREF-1003', cost: 265.00 },
 ];
 
 // ── Extended Parts (for Advanced Parts Lookup) ──
@@ -38,6 +44,12 @@ const EXTENDED_PARTS: ExtendedPartRecord[] = [
   { ...SIMPLE_PARTS[11], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 4, onOrder: 6, committed: 0, requestOutPending: 0, manufacturerPartNumber: 'MFR-FC-703', manufacturer: 'Cardone', imageUrl: '' },
   { ...SIMPLE_PARTS[12], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 10, onOrder: 3, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-ALT-801', manufacturer: 'Denso', imageUrl: 'battery.svg' },
   { ...SIMPLE_PARTS[13], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-REP', classTypeId: 'CLS-B', onHand: 7, onOrder: 5, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-SM-802', manufacturer: 'Remy', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[14], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 5, onOrder: 3, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-HC-901', manufacturer: 'Parker', imageUrl: '' },
+  { ...SIMPLE_PARTS[15], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 12, onOrder: 6, committed: 2, requestOutPending: 1, manufacturerPartNumber: 'MFR-TR-902', manufacturer: 'Caterpillar', imageUrl: '' },
+  { ...SIMPLE_PARTS[16], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-INS', classTypeId: 'CLS-B', onHand: 48, onOrder: 20, committed: 8, requestOutPending: 0, manufacturerPartNumber: 'MFR-BT-903', manufacturer: 'Komatsu', imageUrl: '' },
+  { ...SIMPLE_PARTS[17], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 9, onOrder: 4, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-GV-1001', manufacturer: 'Cummins', imageUrl: '' },
+  { ...SIMPLE_PARTS[18], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 15, onOrder: 8, committed: 3, requestOutPending: 1, manufacturerPartNumber: 'MFR-FI-1002', manufacturer: 'Bosch', imageUrl: '' },
+  { ...SIMPLE_PARTS[19], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 3, onOrder: 2, committed: 0, requestOutPending: 0, manufacturerPartNumber: 'MFR-RC-1003', manufacturer: 'Denso', imageUrl: '' },
 ];
 
 // ── Filter Dropdown Options ──
