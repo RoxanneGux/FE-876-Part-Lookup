@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   AwButtonIconOnlyDirective,
+  AwButtonDirective,
   AwDialogComponent,
   AwIconComponent,
   AwSearchComponent,
+  AwToastComponent,
   DialogOptions,
   DialogVariants,
   TableCellInput,
@@ -45,10 +47,13 @@ export function filterParts(parts: SimplePartRecord[], query: string): SimplePar
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
+    FormsModule,
     AwDialogComponent,
     AwIconComponent,
     AwSearchComponent,
     AwButtonIconOnlyDirective,
+    AwButtonDirective,
+    AwToastComponent,
   ],
   template: `
     <aw-dialog
@@ -65,23 +70,72 @@ export function filterParts(parts: SimplePartRecord[], query: string): SimplePar
         <div style="padding: 16px 16px 0 16px; display: flex; align-items: center; gap: 8px;">
           <div style="flex: 1;">
             <aw-search
-              [formControl]="searchControl"
+              #searchComponent
+              [ngModel]="searchText"
+              (ngModelChange)="onSearchChange($event)"
               [placeholder]="'Search'"
               [ariaLabel]="'Search parts'">
             </aw-search>
           </div>
           <button AwButtonIconOnly [buttonType]="'primary'"
-                  [disable]="true" ariaLabel="Scan barcode" type="button">
-            <aw-icon [iconName]="'barcode_scanner'"></aw-icon>
+                  ariaLabel="Scan barcode" type="button"
+                  (click)="$event.stopPropagation(); onScanClick()">
+            <aw-icon [iconName]="'barcode-scan'" [iconColor]="''"></aw-icon>
           </button>
         </div>
       </div>
     </aw-dialog>
+
+    <!-- Toast for no camera -->
+    <aw-toast #toastComponent></aw-toast>
+
+    <!-- Camera preview overlay -->
+    @if (showCameraPreview()) {
+      <div class="camera-overlay">
+        <div class="camera-container">
+          <video #cameraVideo autoplay playsinline></video>
+          <div class="camera-actions" style="display: flex; justify-content: center; gap: 16px; margin-top: 16px;">
+            <button AwButton [buttonType]="'primary'" (click)="captureBarcode()">
+              <aw-icon [iconName]="'photo_camera'" [iconColor]="''"></aw-icon>
+              <span>Capture</span>
+            </button>
+            <button AwButton [buttonType]="'secondary'" (click)="closeCameraPreview()">
+              <aw-icon [iconName]="'close'" [iconColor]="''"></aw-icon>
+              <span>Close</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   `,
   styles: [`
     :host {
       .search-controls {
         border-bottom: 1px solid var(--system-line-divider-stroke-line-color);
+      }
+      .camera-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .camera-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 640px;
+        width: 90%;
+        video {
+          width: 100%;
+          border-radius: 8px;
+          background: #000;
+        }
       }
     }
   `],
@@ -93,6 +147,8 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
   mode: 'single' | 'multi' = 'single';
 
   private readonly mockDataService = inject(MockDataService);
+  readonly toastComponent = viewChild<any>('toastComponent');
+  readonly searchComponent = viewChild<any>('searchComponent');
 
   /** Filtered table data displayed in the dialog. */
   readonly tableData = signal<SimplePartRecord[]>([]);
@@ -223,6 +279,62 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
    */
   handleCancel(): void {
     this.close.emit(null);
+  }
+
+  // ── Scan ──
+
+  readonly showCameraPreview = signal<boolean>(false);
+  readonly cameraVideo = viewChild<any>('cameraVideo');
+  private _mediaStream: MediaStream | null = null;
+
+  async onScanClick(): Promise<void> {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const hasCamera = devices.some(d => d.kind === 'videoinput');
+      if (!hasCamera) {
+        this.toastComponent()?.showToast({
+          variant: 'alert',
+          title: 'No camera or scanner detected',
+          description: 'Enter part ID manually',
+        });
+        return;
+      }
+      this._mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      this.showCameraPreview.set(true);
+      setTimeout(() => {
+        const videoEl = this.cameraVideo()?.nativeElement;
+        if (videoEl && this._mediaStream) {
+          videoEl.srcObject = this._mediaStream;
+        }
+      }, 100);
+    } catch {
+      this.toastComponent()?.showToast({
+        variant: 'alert',
+        title: 'No camera or scanner detected',
+        description: 'Enter part ID manually',
+      });
+    }
+  }
+
+  captureBarcode(): void {
+    const mockScannedId = 'PRT-OIL-001';
+    this.closeCameraPreview();
+    this.searchText = mockScannedId;
+    this.onSearchChange(mockScannedId);
+    // Workaround: aw-search writeValue() bug — set internal controls directly
+    const search = this.searchComponent();
+    if (search) {
+      search.searchControl.setValue(mockScannedId);
+      search.selectedValue.set({ label: mockScannedId });
+    }
+  }
+
+  closeCameraPreview(): void {
+    if (this._mediaStream) {
+      this._mediaStream.getTracks().forEach(t => t.stop());
+      this._mediaStream = null;
+    }
+    this.showCameraPreview.set(false);
   }
 
   // ── Static filter for testability ──

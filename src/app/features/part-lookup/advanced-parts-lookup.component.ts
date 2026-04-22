@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   ActionBarLeft,
   ActionBarRight,
   AwActionBarComponent,
   AwButtonIconOnlyDirective,
+  AwButtonDirective,
   AwChipComponent,
   AwFormFieldLabelComponent,
   AwIconComponent,
@@ -12,6 +13,7 @@ import {
   AwSelectMenuComponent,
   AwSideDrawerComponent,
   AwTableComponent,
+  AwToastComponent,
   MultiSelectOption,
   SideDrawerInformation,
   SingleSelectOption,
@@ -32,6 +34,7 @@ import { ExtendedPartRecord } from './part-lookup.models';
     ReactiveFormsModule,
     AwActionBarComponent,
     AwButtonIconOnlyDirective,
+    AwButtonDirective,
     AwChipComponent,
     AwFormFieldLabelComponent,
     AwIconComponent,
@@ -39,6 +42,7 @@ import { ExtendedPartRecord } from './part-lookup.models';
     AwSelectMenuComponent,
     AwSideDrawerComponent,
     AwTableComponent,
+    AwToastComponent,
   ],
   templateUrl: './advanced-parts-lookup.component.html',
   styleUrl: './advanced-parts-lookup.component.scss',
@@ -69,6 +73,7 @@ export class AdvancedPartsLookupComponent {
   // ── Filter Signals ──
 
   readonly searchText = signal<string>('');
+  readonly searchDisplayValue = signal<string>('');
   readonly stockLocation = signal<string>('LOC-MAIN');
   readonly partFilter = signal<string[]>([]);
   readonly categoryFilter = signal<string[]>([]);
@@ -95,8 +100,15 @@ export class AdvancedPartsLookupComponent {
   private selectedSingleRow = signal<any>(null);
   private selectedMultiRows = signal<any[]>([]);
 
+  // ── Camera / Scanner ──
+
+  readonly showCameraPreview = signal<boolean>(false);
+  readonly cameraVideo = viewChild<ElementRef<HTMLVideoElement>>('cameraVideo');
+  readonly toastComponent = viewChild<any>('toastComponent');
+  readonly searchComponent = viewChild<any>('searchComponent');
+  private _mediaStream: MediaStream | null = null;
+
   constructor() {
-    this.searchControl.valueChanges.subscribe(val => this.searchText.set(val || ''));
     this.partFilterControl.valueChanges.subscribe(val => this.partFilter.set(this.extractMultiSelectValues(val)));
     this.categoryFilterControl.valueChanges.subscribe(val => this.categoryFilter.set(this.extractMultiSelectValues(val)));
     this.equipmentTypeControl.valueChanges.subscribe(val => {
@@ -245,6 +257,12 @@ export class AdvancedPartsLookupComponent {
     this.stockLocation.set(value);
   }
 
+  onSearchInputChange(event: any): void {
+    const value = typeof event === 'string' ? event : '';
+    this.searchText.set(value);
+    this.searchDisplayValue.set(value);
+  }
+
   onXrefFilterChange(event: any): void {
     const value = typeof event === 'string' ? event : (event?.value ?? 'include-xref');
     this.includeXRefs.set(value);
@@ -305,6 +323,58 @@ export class AdvancedPartsLookupComponent {
       }
     }
     this.updateFilterChips();
+  }
+
+  // ── Scan Button ──
+
+  private showNoCameraToast(): void {
+    this.toastComponent()?.showToast({
+      variant: 'alert',
+      title: 'No camera or scanner detected',
+      description: 'Enter part ID manually',
+    });
+  }
+
+  async onScanClick(): Promise<void> {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const hasCamera = devices.some(d => d.kind === 'videoinput');
+      if (!hasCamera) {
+        this.showNoCameraToast();
+        return;
+      }
+      this._mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      this.showCameraPreview.set(true);
+      setTimeout(() => {
+        const videoEl = this.cameraVideo()?.nativeElement;
+        if (videoEl && this._mediaStream) {
+          videoEl.srcObject = this._mediaStream;
+        }
+      }, 100);
+    } catch {
+      this.showNoCameraToast();
+    }
+  }
+
+  captureBarcode(): void {
+    const mockScannedId = 'PRT-OIL-001';
+    this.closeCameraPreview();
+    this.searchText.set(mockScannedId);
+    this.searchDisplayValue.set(mockScannedId);
+    // Workaround: aw-search writeValue() bug — set internal controls directly
+    const search = this.searchComponent();
+    if (search) {
+      search.searchControl.setValue(mockScannedId);
+      search.selectedValue.set({ label: mockScannedId });
+    }
+  }
+
+  closeCameraPreview(): void {
+    if (this._mediaStream) {
+      this._mediaStream.getTracks().forEach(t => t.stop());
+      this._mediaStream = null;
+    }
+    this.showCameraPreview.set(false);
   }
 
   // ── Selection Handlers ──

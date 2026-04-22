@@ -7,11 +7,20 @@
 
     <!-- Quick Filters Row -->
     <div class="quick-filters-row">
-      <aw-search
-        [formControl]="searchControl"
-        [placeholder]="'Search'"
-        [ariaLabel]="'Search parts'">
-      </aw-search>
+      <div class="d-flex align-items-end gap-2 flex-fill">
+        <aw-search
+          #searchComponent
+          [ngModel]="searchDisplayValue()"
+          (ngModelChange)="onSearchInputChange($event)"
+          [placeholder]="'Search'"
+          [ariaLabel]="'Search parts'">
+        </aw-search>
+        <button AwButtonIconOnly [buttonType]="'primary'"
+          ariaLabel="Scan barcode" type="button"
+          (click)="onScanClick()">
+          <aw-icon [iconName]="'barcode-scan'" [iconColor]="''"></aw-icon>
+        </button>
+      </div>
 
       <aw-select-menu
         [ariaLabel]="'Stock Location'"
@@ -138,3 +147,25 @@
     </aw-select-menu>
   </div>
 </aw-side-drawer>
+
+<!-- No camera toast -->
+<aw-toast #toastComponent></aw-toast>
+
+<!-- Camera preview overlay -->
+@if (showCameraPreview()) {
+  <div class="camera-overlay">
+    <div class="camera-container">
+      <video #cameraVideo autoplay playsinline></video>
+      <div class="camera-actions d-flex justify-content-center gap-3 mt-3">
+        <button AwButton [buttonType]="'primary'" (click)="captureBarcode()">
+          <aw-icon [iconName]="'photo_camera'" [iconColor]="''"></aw-icon>
+          <span>Capture</span>
+        </button>
+        <button AwButton [buttonType]="'secondary'" (click)="closeCameraPreview()">
+          <aw-icon [iconName]="'close'" [iconColor]="''"></aw-icon>
+          <span>Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}
