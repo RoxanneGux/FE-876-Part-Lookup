@@ -76,7 +76,12 @@
       </div>
     }
 
-    <!-- Table -->
+    <!--
+      DEV NOTE: aw-table's empty state ".no-content" has minimal styling by default.
+      A global override in src/styles.scss adds surfaces-raised background and bottom padding
+      to match the production FA-Suite empty state appearance. This only affects the zero-rows
+      placeholder — normal table rows are not affected.
+    -->
     <div class="table-container">
       <aw-table
         [attr.aria-label]="'Parts search results'"

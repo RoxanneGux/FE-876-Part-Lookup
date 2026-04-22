@@ -1,3 +1,13 @@
 @import "../node_modules/@assetworks-llc/aw-component-lib/styles/styles.scss";
 
-/* You can add global styles to this file, and also import other style files */
+/* Global style overrides */
+
+/* Style the aw-table empty state to match production */
+aw-table .no-content {
+  text-align: center;
+  padding: 8px 0 24px;
+  margin-top: 0;
+  font-size: 14px;
+  font-style: italic;
+  background: var(--system-surfaces-surfaces-raised, #fff);
+}
