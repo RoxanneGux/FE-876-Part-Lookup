@@ -63,7 +63,7 @@
 
     <!-- Filter Chips from Side Drawer -->
     @if (activeFilterChips().length > 0) {
-      <div class="filter-chips-row d-flex flex-wrap gap-3 ps-3 pt-2 pe-3 pb-4 mb-2">
+      <div class="filter-chips-row d-flex flex-wrap gap-3 ps-3 pt-2 pe-3 pb-2">
         @for (chip of activeFilterChips(); track chip) {
           <aw-chip
             [label]="chip"
