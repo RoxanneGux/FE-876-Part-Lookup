@@ -1,6 +1,7 @@
 /** A part record for the simple dialog flat table. */
 export interface SimplePartRecord {
   partId: string;
+  partSuffix: string;
   partDescription: string;
   keyword: string;
   crossReference: string;

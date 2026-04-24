@@ -151,6 +151,7 @@ export class AdvancedPartsLookupComponent {
     if (search) {
       data = data.filter(p =>
         p.partId.toLowerCase().includes(search) ||
+        p.partSuffix.toLowerCase().includes(search) ||
         p.partDescription.toLowerCase().includes(search) ||
         p.keyword.toLowerCase().includes(search) ||
         p.crossReference.toLowerCase().includes(search) ||
@@ -204,6 +205,7 @@ export class AdvancedPartsLookupComponent {
         template: '<div><span class="aw-b-1">' + (data[0] || '') + '</span><br><span class="aw-c-1" style="color:var(--system-text-text-secondary)">' + (data[1] || '') + '</span></div>',
       }),
     },
+    { type: TableCellTypes.Title, key: 'partSuffix', label: 'Part suffix', sort: true },
     {
       type: TableCellTypes.Custom, key: 'categoryId', label: 'Category', sort: true, align: 'left',
       combineFields: ['categoryId', 'categoryDescription'],

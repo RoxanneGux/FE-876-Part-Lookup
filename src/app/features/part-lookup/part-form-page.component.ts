@@ -108,13 +108,18 @@ import { AdvancedPartsLookupComponent } from './advanced-parts-lookup.component'
  */
 
 /**
- * Resolves a typed part ID against the provided parts array.
+ * Resolves a typed part ID + suffix against the provided parts array.
+ * Matches on BOTH partId AND partSuffix (case-insensitive).
  * Exported as a standalone function for testability (Property 1).
  */
-export function lookupPart(value: string, parts: SimplePartRecord[]): { text: string; isError: boolean } {
+export function lookupPart(value: string, suffix: string, parts: SimplePartRecord[]): { text: string; isError: boolean } {
   const trimmed = (value ?? '').trim();
   if (!trimmed) return { text: '', isError: false };
-  const match = parts.find(p => p.partId.toLowerCase() === trimmed.toLowerCase());
+  const sfx = (suffix ?? '00').trim();
+  const match = parts.find(p =>
+    p.partId.toLowerCase() === trimmed.toLowerCase() &&
+    p.partSuffix === sfx
+  );
   return match
     ? { text: match.partDescription, isError: false }
     : { text: 'NOT DEFINED', isError: true };
@@ -231,8 +236,8 @@ export function blurUppercase(value: string): string {
           </div>
           @if (selectedParts().length > 0) {
             <div class="selected-parts-list" role="list" aria-label="Selected parts">
-              @for (part of selectedParts(); track part.partId) {
-                <span class="aw-c-1" role="listitem">({{ part.partId }}) {{ part.partDescription }}</span>
+              @for (part of selectedParts(); track part.partId + part.partSuffix) {
+                <span class="aw-c-1" role="listitem">({{ part.partId }}-{{ part.partSuffix }}) {{ part.partDescription }}</span>
               }
             </div>
           }
@@ -406,10 +411,11 @@ export class PartFormPageComponent {
           this.openAdvancedLookup(result.mode ?? 'single');
           return;
         }
-        // Selected part → populate Part field
+        // Selected part → populate Part ID, suffix, and description
         const part = result as SimplePartRecord;
         if (part?.partId) {
-          this.partControl.setValue(formatPartDisplay(part.partId, part.partDescription), { emitEvent: false });
+          this.partControl.setValue(part.partId, { emitEvent: false });
+          this.partSuffixControl.setValue(part.partSuffix ?? '00', { emitEvent: false });
           this.partDescription.set(part.partDescription);
           this.partDescriptionError.set(false);
         }
@@ -432,6 +438,11 @@ export class PartFormPageComponent {
         // Multi-select result → set selectedParts and write to field
         if (Array.isArray(result)) {
           this.writeBackSelectedParts(result);
+          // Set suffix to the last selected part's suffix
+          const lastPart = result[result.length - 1] as SimplePartRecord;
+          if (lastPart?.partSuffix) {
+            this.partsSuffixControl.setValue(lastPart.partSuffix, { emitEvent: false });
+          }
         }
       }
     );
@@ -451,13 +462,19 @@ export class PartFormPageComponent {
     if (this.advancedLookupMode() === 'single') {
       const part = result as SimplePartRecord;
       if (part?.partId) {
-        this.partControl.setValue(formatPartDisplay(part.partId, part.partDescription), { emitEvent: false });
+        this.partControl.setValue(part.partId, { emitEvent: false });
+        this.partSuffixControl.setValue(part.partSuffix ?? '00', { emitEvent: false });
         this.partDescription.set(part.partDescription);
         this.partDescriptionError.set(false);
       }
     } else {
       if (Array.isArray(result)) {
         this.writeBackSelectedParts(result);
+        // Set suffix to the last selected part's suffix
+        const lastPart = result[result.length - 1] as SimplePartRecord;
+        if (lastPart?.partSuffix) {
+          this.partsSuffixControl.setValue(lastPart.partSuffix, { emitEvent: false });
+        }
       }
     }
   }
@@ -477,8 +494,9 @@ export class PartFormPageComponent {
     const uppercased = blurUppercase(value);
     this.partControl.setValue(uppercased, { emitEvent: false });
 
-    // Resolve against mock data
-    const result = lookupPart(trimmed, this.mockDataService.flatPartLookup());
+    // Resolve against mock data using both Part ID and current suffix
+    const suffix = this.partSuffixControl.value ?? '00';
+    const result = lookupPart(trimmed, suffix, this.mockDataService.flatPartLookup());
     this.partDescription.set(result.text);
     this.partDescriptionError.set(result.isError);
   }
@@ -503,37 +521,55 @@ export class PartFormPageComponent {
     }
   }
 
-  /** Pad suffix to 2 digits on blur. */
+  /** Pad suffix to 2 digits on blur and re-resolve description. */
   onPartSuffixBlur(mode: 'single' | 'multi'): void {
     const control = mode === 'single' ? this.partSuffixControl : this.partsSuffixControl;
     const val = (control.value ?? '').replace(/\D/g, '');
-    control.setValue(val.padStart(2, '0'), { emitEvent: false });
+    const padded = val.padStart(2, '0');
+    control.setValue(padded, { emitEvent: false });
+    this.resolveDescriptionAfterSuffixChange(mode, padded);
   }
 
-  /** Increment suffix (max 99). */
+  /** Increment suffix (max 99) and re-resolve description. */
   incrementPartSuffix(mode: 'single' | 'multi'): void {
     const control = mode === 'single' ? this.partSuffixControl : this.partsSuffixControl;
     const current = parseInt(control.value ?? '0', 10) || 0;
     if (current < 99) {
-      control.setValue(String(current + 1).padStart(2, '0'), { emitEvent: false });
+      const newSuffix = String(current + 1).padStart(2, '0');
+      control.setValue(newSuffix, { emitEvent: false });
+      this.resolveDescriptionAfterSuffixChange(mode, newSuffix);
     }
   }
 
-  /** Decrement suffix (min 0). */
+  /** Decrement suffix (min 0) and re-resolve description. */
   decrementPartSuffix(mode: 'single' | 'multi'): void {
     const control = mode === 'single' ? this.partSuffixControl : this.partsSuffixControl;
     const current = parseInt(control.value ?? '0', 10) || 0;
     if (current > 0) {
-      control.setValue(String(current - 1).padStart(2, '0'), { emitEvent: false });
+      const newSuffix = String(current - 1).padStart(2, '0');
+      control.setValue(newSuffix, { emitEvent: false });
+      this.resolveDescriptionAfterSuffixChange(mode, newSuffix);
     }
+  }
+
+  /** Re-resolve description after suffix change. Looks up current Part ID + new suffix. */
+  private resolveDescriptionAfterSuffixChange(mode: 'single' | 'multi', newSuffix: string): void {
+    if (mode === 'single') {
+      const partId = (this.partControl.value ?? '').trim();
+      if (!partId) return;
+      const result = lookupPart(partId, newSuffix, this.mockDataService.flatPartLookup());
+      this.partDescription.set(result.text);
+      this.partDescriptionError.set(result.isError);
+    }
+    // Multi-select: no single description to update
   }
 
   // ── Action Bar Handlers ──
 
-  /** Formats selected parts and writes to the partsControl field. */
+  /** Formats selected parts and writes to the partsControl field in "(PartID-Suffix) Description" format. */
   private writeBackSelectedParts(parts: SimplePartRecord[]): void {
     this.selectedParts.set(parts);
-    const formatted = parts.map(p => formatPartDisplay(p.partId, p.partDescription)).join('; ');
+    const formatted = parts.map(p => '(' + p.partId + '-' + (p.partSuffix ?? '00') + ') ' + p.partDescription).join('; ');
     this.partsControl.setValue(formatted, { emitEvent: false });
   }
 

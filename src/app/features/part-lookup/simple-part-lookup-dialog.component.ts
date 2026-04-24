@@ -19,7 +19,7 @@ import { SimplePartRecord } from './part-lookup.models';
 
 /**
  * Filters an array of SimplePartRecord by a case-insensitive substring match
- * across all five visible fields: partId, partDescription, keyword, crossReference, cost (as string).
+ * across visible fields: partId, partSuffix, partDescription, keyword.
  *
  * Exported as a public static method for independent testability (Property 2).
  */
@@ -28,10 +28,9 @@ export function filterParts(parts: SimplePartRecord[], query: string): SimplePar
   if (!q) return parts;
   return parts.filter(p =>
     p.partId.toLowerCase().includes(q) ||
+    p.partSuffix.toLowerCase().includes(q) ||
     p.partDescription.toLowerCase().includes(q) ||
-    p.keyword.toLowerCase().includes(q) ||
-    p.crossReference.toLowerCase().includes(q) ||
-    p.cost.toString().includes(q)
+    p.keyword.toLowerCase().includes(q)
   );
 }
 
@@ -161,7 +160,7 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
 
   // ── Column Definitions ──
 
-  /** Base data columns (shared between single and multi modes). */
+  /** Base data columns matching the legacy table: Image, Part ID, Part suffix, Keyword, Short description. */
   private readonly dataColumns: TableCellInput[] = [
     {
       type: TableCellTypes.Custom, key: 'imageUrl', label: 'Image', sort: false, align: 'center',
@@ -174,22 +173,10 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
         return { template: '<div style="width:40px;height:40px;background:var(--system-surfaces-surfaces-lower);border-radius:4px"></div>' };
       },
     },
-    {
-      type: TableCellTypes.Custom, key: 'partId', label: 'Part', sort: true, align: 'left',
-      combineFields: ['partId', 'partDescription'],
-      combineTemplate: (data: any[]) => ({
-        template: '<div><span class="aw-b-1">' + (data[0] || '') + '</span><br><span class="aw-c-1" style="color:var(--system-text-text-secondary)">' + (data[1] || '') + '</span></div>',
-      }),
-    },
+    { type: TableCellTypes.Title, key: 'partId', label: 'Part ID', sort: true },
+    { type: TableCellTypes.Title, key: 'partSuffix', label: 'Part suffix', sort: true },
     { type: TableCellTypes.Title, key: 'keyword', label: 'Keyword', sort: true },
-    { type: TableCellTypes.Title, key: 'crossReference', label: 'Cross-Ref', sort: true },
-    {
-      type: TableCellTypes.Custom, key: 'cost', label: 'Cost', sort: true, align: 'right',
-      combineFields: ['cost'],
-      combineTemplate: (data: any[]) => ({
-        template: '<span class="aw-b-1">$' + (data[0] ?? 0).toFixed(2) + '</span>',
-      }),
-    },
+    { type: TableCellTypes.Title, key: 'partDescription', label: 'Short description', sort: true },
   ];
 
   /**
@@ -317,7 +304,7 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
   }
 
   captureBarcode(): void {
-    const mockScannedId = 'PRT-OIL-001';
+    const mockScannedId = '30001';
     this.closeCameraPreview();
     this.searchText = mockScannedId;
     this.onSearchChange(mockScannedId);
@@ -327,10 +314,6 @@ export class SimplePartLookupDialogComponent extends BaseDialogComponent {
       search.searchControl.setValue(mockScannedId);
       search.selectedValue.set({ label: mockScannedId });
     }
-    // TODO (nice-to-have): After scan, auto-select the matching row in the table
-    // so the user can immediately click "Add" without manually selecting.
-    // This requires programmatically setting aw-dialog's selectedSingleRow or
-    // triggering a checkbox selection on the matching row via the CCL table API.
   }
 
   closeCameraPreview(): void {

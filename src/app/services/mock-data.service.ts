@@ -5,51 +5,51 @@ import { SimplePartRecord, ExtendedPartRecord } from '../features/part-lookup/pa
 // ── Simple Parts (flat list for Simple Part Lookup Dialog) ──
 
 const SIMPLE_PARTS: SimplePartRecord[] = [
-  { partId: 'PRT-OIL-001', partDescription: 'Oil Pump Assembly', keyword: 'Pump', crossReference: 'OP-XREF-601', cost: 125.00 },
-  { partId: 'PRT-OIL-002', partDescription: 'Oil Pan Gasket Set', keyword: 'Gasket', crossReference: 'OG-XREF-602', cost: 22.50 },
-  { partId: 'PRT-OIL-003', partDescription: 'Oil Pressure Sensor', keyword: 'Sensor', crossReference: 'OS-XREF-603', cost: 35.75 },
-  { partId: 'PRT-FLT-001', partDescription: 'Standard Oil Filter', keyword: 'Filter', crossReference: 'OEM-FLT-100', cost: 12.50 },
-  { partId: 'PRT-CLN-001', partDescription: 'Engine Coolant 1 Gal', keyword: 'Coolant', crossReference: 'COOL-REF-50', cost: 18.75 },
-  { partId: 'PRT-ENG-001', partDescription: 'Spark Plug Iridium', keyword: 'Ignition', crossReference: 'SP-XREF-200', cost: 8.99 },
-  { partId: 'PRT-ENG-002', partDescription: 'Timing Belt Kit', keyword: 'Belt', crossReference: 'TB-XREF-300', cost: 45.00 },
-  { partId: 'PRT-BRK-001', partDescription: 'Brake Fluid DOT 4', keyword: 'Fluid', crossReference: 'BF-XREF-400', cost: 9.50 },
-  { partId: 'PRT-BRK-002', partDescription: 'Rear Brake Drum', keyword: 'Drum', crossReference: 'BD-XREF-500', cost: 67.25 },
-  { partId: 'PRT-FBK-001', partDescription: 'Front Brake Rotor', keyword: 'Rotor', crossReference: 'FR-XREF-701', cost: 89.99 },
-  { partId: 'PRT-FBK-002', partDescription: 'Front Brake Pad Set', keyword: 'Pad', crossReference: 'FP-XREF-702', cost: 42.00 },
-  { partId: 'PRT-FBK-003', partDescription: 'Front Caliper Left', keyword: 'Caliper', crossReference: 'FC-XREF-703', cost: 155.00 },
-  { partId: 'PRT-ELEC-001', partDescription: 'Alternator 12V 150A', keyword: 'Electrical', crossReference: 'ALT-XREF-801', cost: 210.00 },
-  { partId: 'PRT-ELEC-002', partDescription: 'Starter Motor Rebuilt', keyword: 'Starter', crossReference: 'SM-XREF-802', cost: 175.50 },
-  { partId: 'PRT-HVY-001', partDescription: 'Hydraulic Cylinder Ram', keyword: 'Hydraulic', crossReference: 'HC-XREF-901', cost: 485.00 },
-  { partId: 'PRT-HVY-002', partDescription: 'Track Roller Assembly', keyword: 'Track', crossReference: 'TR-XREF-902', cost: 320.00 },
-  { partId: 'PRT-HVY-003', partDescription: 'Bucket Tooth Pin Set', keyword: 'Bucket', crossReference: 'BT-XREF-903', cost: 78.50 },
-  { partId: 'PRT-GEN-001', partDescription: 'Generator Voltage Regulator', keyword: 'Regulator', crossReference: 'GV-XREF-1001', cost: 195.00 },
-  { partId: 'PRT-GEN-002', partDescription: 'Fuel Injector Nozzle', keyword: 'Injector', crossReference: 'FI-XREF-1002', cost: 142.75 },
-  { partId: 'PRT-GEN-003', partDescription: 'Radiator Cooling Fan', keyword: 'Cooling', crossReference: 'RC-XREF-1003', cost: 265.00 },
+  { partId: '30001', partSuffix: '00', partDescription: 'OIL FILTER', keyword: 'OIL FILTER', crossReference: 'OEM-FLT-100', cost: 12.50 },
+  { partId: '30002', partSuffix: '00', partDescription: 'AIR FILTER ELEMENT', keyword: 'AIR FILTER', crossReference: 'OEM-AIR-200', cost: 18.75 },
+  { partId: '30003', partSuffix: '00', partDescription: 'BRAKE PAD SET - FRONT', keyword: 'BRAKE PAD', crossReference: 'BP-XREF-300', cost: 42.00 },
+  { partId: '30004', partSuffix: '00', partDescription: 'FUZZY DICE - RED', keyword: 'FUZZY DICE', crossReference: '', cost: 5.99 },
+  { partId: '30008', partSuffix: '00', partDescription: 'ALARM HORN ASSEMBLY', keyword: 'ALARM/HORN', crossReference: 'AH-XREF-800', cost: 67.25 },
+  { partId: '30021', partSuffix: '00', partDescription: 'HYDRAULIC FILTER', keyword: 'FILTER-OIL', crossReference: 'HF-XREF-210', cost: 35.75 },
+  { partId: '30063', partSuffix: '00', partDescription: 'CABIN AIR FILTER', keyword: 'FILTER-AIR', crossReference: 'CA-XREF-630', cost: 22.50 },
+  { partId: 'AIR FILTER', partSuffix: '00', partDescription: 'AIR FILTER - STANDARD', keyword: 'AIR FILTER', crossReference: 'AF-STD-001', cost: 15.00 },
+  { partId: 'ALTERNATOR', partSuffix: '00', partDescription: 'ALTERNATOR - NEW', keyword: 'ALTERNATOR', crossReference: 'ALT-NEW-001', cost: 210.00 },
+  { partId: 'ALTERNATOR', partSuffix: '01', partDescription: 'ALTERNATOR - REBUILT', keyword: 'ALTERNATOR', crossReference: 'ALT-REB-001', cost: 155.00 },
+  { partId: 'ALTERNATOR', partSuffix: '02', partDescription: 'ALTERNATOR - USED', keyword: 'ALTERNATOR', crossReference: 'ALT-USD-001', cost: 85.00 },
+  { partId: 'BATTERY WITH CORE', partSuffix: '00', partDescription: 'BATTERY 12V WITH CORE', keyword: 'BATTERY', crossReference: 'BAT-CORE-01', cost: 125.00 },
+  { partId: 'BATTERY-51R', partSuffix: '00', partDescription: 'BATTERY GROUP 51R', keyword: 'BATTERY', crossReference: 'BAT-51R-01', cost: 139.99 },
+  { partId: 'BRAKES', partSuffix: '00', partDescription: 'BRAKE SHOE SET - REAR', keyword: 'BRAKE PAD', crossReference: 'BS-XREF-400', cost: 38.50 },
+  { partId: 'ELECTRIC MOTOR', partSuffix: '00', partDescription: 'ELECTRIC MOTOR 1/2 HP', keyword: 'MOTOR', crossReference: 'EM-XREF-500', cost: 175.50 },
+  { partId: 'FRAM-30001', partSuffix: '00', partDescription: 'FRAM OIL FILTER PH3506', keyword: 'FILTER-OIL', crossReference: 'FRAM-PH3506', cost: 8.99 },
+  { partId: 'OIL FILTER', partSuffix: '00', partDescription: 'OIL FILTER - STANDARD', keyword: 'OIL FILTER', crossReference: 'OF-STD-001', cost: 11.50 },
+  { partId: '31-CP', partSuffix: '00', partDescription: 'COOLANT PUMP ASSEMBLY', keyword: 'MOTOR', crossReference: 'CP-XREF-310', cost: 195.00 },
+  { partId: '6213251', partSuffix: '00', partDescription: 'FUEL INJECTOR NOZZLE', keyword: 'ALTERNATOR', crossReference: 'FI-XREF-621', cost: 142.75 },
+  { partId: 'ACA PART', partSuffix: '00', partDescription: 'ACA CERTIFIED PART', keyword: 'FILTER-AIR', crossReference: 'ACA-CERT-01', cost: 28.00 },
 ];
 
 // ── Extended Parts (for Advanced Parts Lookup) ──
 
 const EXTENDED_PARTS: ExtendedPartRecord[] = [
-  { ...SIMPLE_PARTS[0], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 15, onOrder: 5, committed: 3, requestOutPending: 1, manufacturerPartNumber: 'MFR-OP-601', manufacturer: 'Delphi', imageUrl: 'oil.svg' },
-  { ...SIMPLE_PARTS[1], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 42, onOrder: 0, committed: 8, requestOutPending: 0, manufacturerPartNumber: 'MFR-OG-602', manufacturer: 'Fel-Pro', imageUrl: 'oil.svg' },
-  { ...SIMPLE_PARTS[2], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-INS', classTypeId: 'CLS-A', onHand: 8, onOrder: 10, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-OS-603', manufacturer: 'Bosch', imageUrl: 'oil.svg' },
-  { ...SIMPLE_PARTS[3], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-C', onHand: 120, onOrder: 50, committed: 15, requestOutPending: 3, manufacturerPartNumber: 'MFR-FLT-100', manufacturer: 'Fram', imageUrl: 'oil.svg' },
-  { ...SIMPLE_PARTS[4], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-REP', classTypeId: 'CLS-B', onHand: 65, onOrder: 20, committed: 10, requestOutPending: 2, manufacturerPartNumber: 'MFR-CLN-50', manufacturer: 'Prestone', imageUrl: '' },
-  { ...SIMPLE_PARTS[5], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 200, onOrder: 0, committed: 25, requestOutPending: 0, manufacturerPartNumber: 'MFR-SP-200', manufacturer: 'NGK', imageUrl: '' },
-  { ...SIMPLE_PARTS[6], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 18, onOrder: 12, committed: 4, requestOutPending: 1, manufacturerPartNumber: 'MFR-TB-300', manufacturer: 'Gates', imageUrl: '' },
-  { ...SIMPLE_PARTS[7], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 90, onOrder: 30, committed: 12, requestOutPending: 0, manufacturerPartNumber: 'MFR-BF-400', manufacturer: 'Castrol', imageUrl: 'brakes.svg' },
-  { ...SIMPLE_PARTS[8], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 6, onOrder: 8, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-BD-500', manufacturer: 'ACDelco', imageUrl: 'brakes.svg' },
-  { ...SIMPLE_PARTS[9], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 22, onOrder: 10, committed: 5, requestOutPending: 2, manufacturerPartNumber: 'MFR-FR-701', manufacturer: 'Brembo', imageUrl: 'brakes.svg' },
-  { ...SIMPLE_PARTS[10], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 35, onOrder: 15, committed: 7, requestOutPending: 1, manufacturerPartNumber: 'MFR-FP-702', manufacturer: 'Wagner', imageUrl: '' },
-  { ...SIMPLE_PARTS[11], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 4, onOrder: 6, committed: 0, requestOutPending: 0, manufacturerPartNumber: 'MFR-FC-703', manufacturer: 'Cardone', imageUrl: '' },
-  { ...SIMPLE_PARTS[12], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 10, onOrder: 3, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-ALT-801', manufacturer: 'Denso', imageUrl: 'battery.svg' },
-  { ...SIMPLE_PARTS[13], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-REP', classTypeId: 'CLS-B', onHand: 7, onOrder: 5, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-SM-802', manufacturer: 'Remy', imageUrl: 'battery.svg' },
-  { ...SIMPLE_PARTS[14], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 5, onOrder: 3, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-HC-901', manufacturer: 'Parker', imageUrl: '' },
-  { ...SIMPLE_PARTS[15], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 12, onOrder: 6, committed: 2, requestOutPending: 1, manufacturerPartNumber: 'MFR-TR-902', manufacturer: 'Caterpillar', imageUrl: '' },
-  { ...SIMPLE_PARTS[16], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-INS', classTypeId: 'CLS-B', onHand: 48, onOrder: 20, committed: 8, requestOutPending: 0, manufacturerPartNumber: 'MFR-BT-903', manufacturer: 'Komatsu', imageUrl: '' },
-  { ...SIMPLE_PARTS[17], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 9, onOrder: 4, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-GV-1001', manufacturer: 'Cummins', imageUrl: '' },
-  { ...SIMPLE_PARTS[18], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 15, onOrder: 8, committed: 3, requestOutPending: 1, manufacturerPartNumber: 'MFR-FI-1002', manufacturer: 'Bosch', imageUrl: '' },
-  { ...SIMPLE_PARTS[19], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 3, onOrder: 2, committed: 0, requestOutPending: 0, manufacturerPartNumber: 'MFR-RC-1003', manufacturer: 'Denso', imageUrl: '' },
+  { ...SIMPLE_PARTS[0], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 120, onOrder: 50, committed: 15, requestOutPending: 3, manufacturerPartNumber: 'MFR-OIL-30001', manufacturer: 'Fram', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[1], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 85, onOrder: 20, committed: 10, requestOutPending: 0, manufacturerPartNumber: 'MFR-AIR-30002', manufacturer: 'Wix', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[2], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 35, onOrder: 15, committed: 7, requestOutPending: 1, manufacturerPartNumber: 'MFR-BRK-30003', manufacturer: 'Wagner', imageUrl: 'brakes.svg' },
+  { ...SIMPLE_PARTS[3], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 200, onOrder: 0, committed: 0, requestOutPending: 0, manufacturerPartNumber: '', manufacturer: '', imageUrl: '' },
+  { ...SIMPLE_PARTS[4], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-B', onHand: 12, onOrder: 6, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-AH-30008', manufacturer: 'Bosch', imageUrl: '' },
+  { ...SIMPLE_PARTS[5], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 42, onOrder: 10, committed: 8, requestOutPending: 1, manufacturerPartNumber: 'MFR-HF-30021', manufacturer: 'Parker', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[6], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 65, onOrder: 20, committed: 5, requestOutPending: 2, manufacturerPartNumber: 'MFR-CA-30063', manufacturer: 'Fram', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[7], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 90, onOrder: 30, committed: 12, requestOutPending: 0, manufacturerPartNumber: 'MFR-AF-STD', manufacturer: 'Wix', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[8], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 10, onOrder: 3, committed: 2, requestOutPending: 0, manufacturerPartNumber: 'MFR-ALT-NEW', manufacturer: 'Denso', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[9], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-B', onHand: 7, onOrder: 5, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-ALT-REB', manufacturer: 'Remy', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[10], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-C', onHand: 4, onOrder: 2, committed: 0, requestOutPending: 0, manufacturerPartNumber: 'MFR-ALT-USD', manufacturer: 'Cardone', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[11], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 22, onOrder: 8, committed: 3, requestOutPending: 1, manufacturerPartNumber: 'MFR-BAT-CORE', manufacturer: 'Interstate', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[12], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 18, onOrder: 10, committed: 4, requestOutPending: 0, manufacturerPartNumber: 'MFR-BAT-51R', manufacturer: 'Optima', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[13], categoryId: 'CAT-BRK', categoryDescription: 'Brake Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 28, onOrder: 12, committed: 5, requestOutPending: 2, manufacturerPartNumber: 'MFR-BRK-SHOE', manufacturer: 'Brembo', imageUrl: 'brakes.svg' },
+  { ...SIMPLE_PARTS[14], categoryId: 'CAT-ELEC', categoryDescription: 'Electrical Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-HVY', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 6, onOrder: 3, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-EM-500', manufacturer: 'Baldor', imageUrl: 'battery.svg' },
+  { ...SIMPLE_PARTS[15], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 150, onOrder: 40, committed: 20, requestOutPending: 5, manufacturerPartNumber: 'FRAM-PH3506', manufacturer: 'Fram', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[16], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-PM', classTypeId: 'CLS-A', onHand: 75, onOrder: 25, committed: 10, requestOutPending: 0, manufacturerPartNumber: 'MFR-OF-STD', manufacturer: 'Purolator', imageUrl: 'oil.svg' },
+  { ...SIMPLE_PARTS[17], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-MAIN', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-REP', classTypeId: 'CLS-A', onHand: 5, onOrder: 3, committed: 1, requestOutPending: 0, manufacturerPartNumber: 'MFR-CP-310', manufacturer: 'Cummins', imageUrl: '' },
+  { ...SIMPLE_PARTS[18], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-EAST', equipmentTypeId: 'EQT-GEN', taskTypeId: 'TSK-PM', classTypeId: 'CLS-B', onHand: 15, onOrder: 8, committed: 3, requestOutPending: 1, manufacturerPartNumber: 'MFR-FI-621', manufacturer: 'Bosch', imageUrl: '' },
+  { ...SIMPLE_PARTS[19], categoryId: 'CAT-ENG', categoryDescription: 'Engine Components', stockLocationId: 'LOC-WEST', equipmentTypeId: 'EQT-VEH', taskTypeId: 'TSK-INS', classTypeId: 'CLS-C', onHand: 48, onOrder: 15, committed: 8, requestOutPending: 0, manufacturerPartNumber: 'ACA-CERT-01', manufacturer: 'ACA', imageUrl: '' },
 ];
 
 // ── Filter Dropdown Options ──
@@ -93,10 +93,10 @@ const CLASS_TYPES: MultiSelectOption[] = [
 @Injectable({ providedIn: 'root' })
 export class MockDataService {
 
-  /** Flat list of 14 simple part records for the Simple Part Lookup Dialog. */
+  /** Flat list of simple part records for the Simple Part Lookup Dialog. */
   public readonly simpleParts = signal<SimplePartRecord[]>(SIMPLE_PARTS);
 
-  /** Extended part records (14) for the Advanced Parts Lookup table. */
+  /** Extended part records for the Advanced Parts Lookup table. */
   public readonly extendedParts = signal<ExtendedPartRecord[]>(EXTENDED_PARTS);
 
   /** All simple parts available for type-and-tab-off resolution. */
