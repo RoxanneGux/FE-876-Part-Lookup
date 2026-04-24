@@ -85,7 +85,7 @@ export class AdvancedPartsLookupComponent {
     { label: 'Include Cross Reference', value: 'include-xref' },
     { label: 'Only Cross Reference', value: 'only-xref' },
     { label: 'No Cross Reference', value: 'no-xref' },
-    { label: 'Manuf Part Only', value: 'manuf-part-only' },
+    { label: 'Only Manufactured Part', value: 'manuf-part-only' },
   ];
   readonly equipmentTypeFilter = signal<string[]>([]);
   readonly taskTypeFilter = signal<string[]>([]);
