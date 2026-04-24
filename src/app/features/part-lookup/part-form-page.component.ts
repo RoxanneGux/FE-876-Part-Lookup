@@ -10,7 +10,6 @@ import {
   AwDividerComponent,
   AwFormFieldComponent,
   AwFormFieldLabelComponent,
-  AwFormMessageComponent,
   AwIconComponent,
   AwInputDirective,
   BreadCrumb,
@@ -147,7 +146,6 @@ export function blurUppercase(value: string): string {
     AwDividerComponent,
     AwFormFieldComponent,
     AwFormFieldLabelComponent,
-    AwFormMessageComponent,
     AwInputDirective,
     AwButtonIconOnlyDirective,
     AwButtonDirective,
@@ -169,15 +167,15 @@ export function blurUppercase(value: string): string {
       <!-- Divider -->
       <aw-divider></aw-divider>
 
-      <!-- Form Row: Part + Parts fields side by side -->
+      <!-- Single Select Section -->
+      <aw-divider [subTitle]="'Single Select'"></aw-divider>
       <div class="form-row">
-        <!-- Part Field (single-select) -->
         <div class="form-field">
-          <aw-form-field-label>Part</aw-form-field-label>
-          <aw-form-message [type]="'info'">Single select version</aw-form-message>
+          <!-- Part ID -->
+          <aw-form-field-label>Part ID</aw-form-field-label>
           <div class="field-with-buttons">
             <aw-form-field>
-              <input AwInput [formControl]="partControl" aria-label="Part"
+              <input AwInput [formControl]="partControl" aria-label="Part ID"
                 (blur)="onPartBlur()"
                 (input)="onPartInput($event)" />
             </aw-form-field>
@@ -186,30 +184,50 @@ export function blurUppercase(value: string): string {
               <aw-icon [iconName]="'search'" [iconColor]="''"></aw-icon>
             </button>
             <button AwButton [buttonType]="'outlined'" type="button" aria-label="Open advanced part lookup"
-              (click)="openAdvancedLookup('single')">Lookup</button>
+              (click)="openAdvancedLookup('single')"><span>Lookup</span></button>
           </div>
           @if (partDescription()) {
-            <span class="aw-c-1 field-desc"
-                  [attr.aria-live]="'polite'">
-              {{ partDescription() }}
-            </span>
+            <span class="aw-c-1 field-desc" [attr.aria-live]="'polite'">{{ partDescription() }}</span>
           }
-        </div>
 
-        <!-- Part Field (multi-select) -->
-        <div class="form-field">
-          <aw-form-field-label>Part</aw-form-field-label>
-          <aw-form-message [type]="'info'">Multi select version</aw-form-message>
+          <!-- Part Suffix -->
+          <aw-form-field-label>Part suffix</aw-form-field-label>
           <div class="field-with-buttons">
             <aw-form-field>
-              <input AwInput [formControl]="partsControl" aria-label="Part multi-select" />
+              <input AwInput [formControl]="partSuffixControl" placeholder="00" aria-label="Part suffix"
+                maxlength="2" (keydown)="onPartSuffixKeydown($event)" (blur)="onPartSuffixBlur('single')" />
+            </aw-form-field>
+            <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Increase part suffix" type="button"
+              (click)="incrementPartSuffix('single')">
+              <aw-icon [iconName]="'add_circle'" [iconColor]="''"></aw-icon>
+            </button>
+            <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Decrease part suffix" type="button"
+              (click)="decrementPartSuffix('single')">
+              <aw-icon [iconName]="'remove_circle'" [iconColor]="''"></aw-icon>
+            </button>
+          </div>
+        </div>
+        <div class="form-field"></div>
+      </div>
+
+      <!-- Multi Select Section -->
+      <div class="mt-4 pt-2">
+        <aw-divider [subTitle]="'Multi Select'"></aw-divider>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <!-- Part ID -->
+          <aw-form-field-label>Part ID</aw-form-field-label>
+          <div class="field-with-buttons">
+            <aw-form-field>
+              <input AwInput [formControl]="partsControl" aria-label="Part ID multi-select" />
             </aw-form-field>
             <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Open parts lookup" type="button"
               (click)="openSimplePartsLookup()">
               <aw-icon [iconName]="'search'" [iconColor]="''"></aw-icon>
             </button>
             <button AwButton [buttonType]="'outlined'" type="button" aria-label="Open advanced parts lookup"
-              (click)="openAdvancedLookup('multi')">Lookup</button>
+              (click)="openAdvancedLookup('multi')"><span>Lookup</span></button>
           </div>
           @if (selectedParts().length > 0) {
             <div class="selected-parts-list" role="list" aria-label="Selected parts">
@@ -218,7 +236,25 @@ export function blurUppercase(value: string): string {
               }
             </div>
           }
+
+          <!-- Part Suffix -->
+          <aw-form-field-label>Part suffix</aw-form-field-label>
+          <div class="field-with-buttons">
+            <aw-form-field>
+              <input AwInput [formControl]="partsSuffixControl" placeholder="00" aria-label="Part suffix multi-select"
+                maxlength="2" (keydown)="onPartSuffixKeydown($event)" (blur)="onPartSuffixBlur('multi')" />
+            </aw-form-field>
+            <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Increase part suffix" type="button"
+              (click)="incrementPartSuffix('multi')">
+              <aw-icon [iconName]="'add_circle'" [iconColor]="''"></aw-icon>
+            </button>
+            <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Decrease part suffix" type="button"
+              (click)="decrementPartSuffix('multi')">
+              <aw-icon [iconName]="'remove_circle'" [iconColor]="''"></aw-icon>
+            </button>
+          </div>
         </div>
+        <div class="form-field"></div>
       </div>
     </div>
 
@@ -241,12 +277,10 @@ export function blurUppercase(value: string): string {
       flex-direction: column;
       flex-grow: 1;
       min-height: 100%;
-      box-sizing: border-box;
-      background: var(--system-surfaces-surfaces-background, #ffffff);
     }
 
     .part-form-page {
-      flex: 1;
+      background: var(--system-surfaces-surfaces-background, #ffffff);
       padding: 16px 24px;
 
       @media (max-width: 767px) {
@@ -312,9 +346,7 @@ export function blurUppercase(value: string): string {
     }
 
     .aw-sticky-footer {
-      position: sticky;
-      bottom: 0;
-      z-index: 10;
+      flex-shrink: 0;
     }
   `],
 })
@@ -333,6 +365,12 @@ export class PartFormPageComponent {
 
   /** FormControl for the Parts (multi-select) input — displays selected parts as delimiter-separated string. */
   readonly partsControl = new FormControl('');
+
+  /** FormControl for the single-select Part suffix (2-digit numeric). */
+  readonly partSuffixControl = new FormControl('00');
+
+  /** FormControl for the multi-select Part suffix (2-digit numeric). */
+  readonly partsSuffixControl = new FormControl('00');
 
   readonly selectedParts = signal<SimplePartRecord[]>([]);
   readonly showAdvancedLookup = signal<boolean>(false);
@@ -452,6 +490,41 @@ export class PartFormPageComponent {
       // Immediately hide description when input is cleared (X button, select-all+delete)
       this.partDescription.set('');
       this.partDescriptionError.set(false);
+    }
+  }
+
+  // ── Part Suffix Methods ──
+
+  /** Only allow numeric input in suffix fields. */
+  onPartSuffixKeydown(event: KeyboardEvent): void {
+    const allowed = ['0','1','2','3','4','5','6','7','8','9','Backspace','Delete','Tab','ArrowLeft','ArrowRight'];
+    if (!allowed.includes(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  /** Pad suffix to 2 digits on blur. */
+  onPartSuffixBlur(mode: 'single' | 'multi'): void {
+    const control = mode === 'single' ? this.partSuffixControl : this.partsSuffixControl;
+    const val = (control.value ?? '').replace(/\D/g, '');
+    control.setValue(val.padStart(2, '0'), { emitEvent: false });
+  }
+
+  /** Increment suffix (max 99). */
+  incrementPartSuffix(mode: 'single' | 'multi'): void {
+    const control = mode === 'single' ? this.partSuffixControl : this.partsSuffixControl;
+    const current = parseInt(control.value ?? '0', 10) || 0;
+    if (current < 99) {
+      control.setValue(String(current + 1).padStart(2, '0'), { emitEvent: false });
+    }
+  }
+
+  /** Decrement suffix (min 0). */
+  decrementPartSuffix(mode: 'single' | 'multi'): void {
+    const control = mode === 'single' ? this.partSuffixControl : this.partsSuffixControl;
+    const current = parseInt(control.value ?? '0', 10) || 0;
+    if (current > 0) {
+      control.setValue(String(current - 1).padStart(2, '0'), { emitEvent: false });
     }
   }
 
