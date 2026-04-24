@@ -7,8 +7,10 @@ import {
   AwButtonIconOnlyDirective,
   AwButtonDirective,
   AwChipComponent,
+  AwFormFieldComponent,
   AwFormFieldLabelComponent,
   AwIconComponent,
+  AwInputDirective,
   AwSearchComponent,
   AwSelectMenuComponent,
   AwSideDrawerComponent,
@@ -36,8 +38,10 @@ import { ExtendedPartRecord } from './part-lookup.models';
     AwButtonIconOnlyDirective,
     AwButtonDirective,
     AwChipComponent,
+    AwFormFieldComponent,
     AwFormFieldLabelComponent,
     AwIconComponent,
+    AwInputDirective,
     AwSearchComponent,
     AwSelectMenuComponent,
     AwSideDrawerComponent,
@@ -69,6 +73,7 @@ export class AdvancedPartsLookupComponent {
   readonly equipmentTypeControl = new FormControl<any[]>([]);
   readonly taskTypeControl = new FormControl<any[]>([]);
   readonly classTypeControl = new FormControl<any[]>([]);
+  readonly associatedTaskControl = new FormControl('');
 
   // ── Filter Signals ──
 
@@ -90,6 +95,21 @@ export class AdvancedPartsLookupComponent {
   readonly equipmentTypeFilter = signal<string[]>([]);
   readonly taskTypeFilter = signal<string[]>([]);
   readonly classTypeFilter = signal<string[]>([]);
+  readonly associatedTaskFilter = signal<string>('');
+
+  // ── Associated Task Description ──
+
+  readonly associatedTaskDesc = signal<string>('');
+  readonly associatedTaskDescError = signal<boolean>(false);
+
+  /** Mock task data for lookup resolution. */
+  private readonly _mockTaskData: readonly { id: string; name: string }[] = [
+    { id: 'TSK-001', name: 'Replace brake pads' },
+    { id: 'TSK-002', name: 'Oil change and filter' },
+    { id: 'TSK-003', name: 'Transmission fluid flush' },
+    { id: 'TSK-004', name: 'Diagnose engine misfire' },
+    { id: 'TSK-005', name: 'Tire rotation and balance' },
+  ];
 
   // ── Filter Chips ──
 
@@ -121,6 +141,10 @@ export class AdvancedPartsLookupComponent {
     });
     this.classTypeControl.valueChanges.subscribe(val => {
       this.classTypeFilter.set(this.extractMultiSelectValues(val));
+      this.updateFilterChips();
+    });
+    this.associatedTaskControl.valueChanges.subscribe(val => {
+      this.associatedTaskFilter.set((val ?? '').trim());
       this.updateFilterChips();
     });
   }
@@ -270,6 +294,35 @@ export class AdvancedPartsLookupComponent {
     this.includeXRefs.set(value);
   }
 
+  /** Placeholder for the Associated Task lookup dialog. */
+  onAssociatedTaskLookup(): void {
+    alert('This button would open an aw-dialog with a table inside for searching Associated Task records.');
+  }
+
+  /** Resolve typed Associated Task ID against mock data on blur. */
+  onAssociatedTaskBlur(): void {
+    const value = (this.associatedTaskControl.value ?? '').trim();
+    if (!value) {
+      this.associatedTaskDesc.set('');
+      this.associatedTaskDescError.set(false);
+      return;
+    }
+    const uppercased = value.toUpperCase();
+    this.associatedTaskControl.setValue(uppercased, { emitEvent: false });
+    const match = this._mockTaskData.find(t => t.id.toLowerCase() === value.toLowerCase());
+    this.associatedTaskDesc.set(match ? match.name : 'NOT DEFINED');
+    this.associatedTaskDescError.set(!match);
+  }
+
+  /** Clear description immediately when input is emptied. */
+  onAssociatedTaskInput(event: Event): void {
+    const inputEl = event.target as HTMLInputElement;
+    if (!(inputEl?.value ?? '').trim()) {
+      this.associatedTaskDesc.set('');
+      this.associatedTaskDescError.set(false);
+    }
+  }
+
   // ── Side Drawer Methods ──
 
   openAdvancedFilter(): void {
@@ -280,6 +333,7 @@ export class AdvancedPartsLookupComponent {
     this.equipmentTypeControl.setValue([], { emitEvent: true });
     this.taskTypeControl.setValue([], { emitEvent: true });
     this.classTypeControl.setValue([], { emitEvent: true });
+    this.associatedTaskControl.setValue('', { emitEvent: true });
   }
 
   // ── Filter Chips ──
@@ -297,6 +351,10 @@ export class AdvancedPartsLookupComponent {
     for (const val of this.classTypeFilter()) {
       const opt = this.mockDataService.classTypes().find(o => o.value === val);
       chips.push('Class Type: ' + (opt?.label ?? val));
+    }
+    const task = this.associatedTaskFilter();
+    if (task) {
+      chips.push('Associated Task: ' + task);
     }
     this.activeFilterChips.set(chips);
   }
@@ -323,6 +381,9 @@ export class AdvancedPartsLookupComponent {
         this.classTypeFilter.update(vals => vals.filter(v => v !== opt.value));
         this.classTypeControl.setValue([], { emitEvent: false });
       }
+    } else if (chip.startsWith('Associated Task: ')) {
+      this.associatedTaskControl.setValue('', { emitEvent: false });
+      this.associatedTaskFilter.set('');
     }
     this.updateFilterChips();
   }

@@ -145,6 +145,24 @@
       [formControl]="classTypeControl">
       <aw-form-field-label>Class Type</aw-form-field-label>
     </aw-select-menu>
+
+    <!-- Associated Task — lookup field (input + search button), not a select menu -->
+    <div class="filter-lookup-field">
+      <aw-form-field-label>Associated Task</aw-form-field-label>
+      <div class="d-flex gap-2 align-items-start">
+        <aw-form-field style="flex: 1;">
+          <input AwInput [formControl]="associatedTaskControl" placeholder="Enter Task ID" aria-label="Associated Task"
+            (blur)="onAssociatedTaskBlur()" (input)="onAssociatedTaskInput($event)" />
+        </aw-form-field>
+        <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Search Associated Task" type="button"
+          (click)="onAssociatedTaskLookup()">
+          <aw-icon [iconName]="'search'" [iconColor]="''"></aw-icon>
+        </button>
+      </div>
+      @if (associatedTaskDesc()) {
+        <span class="aw-c-1 field-desc" [attr.aria-live]="'polite'">{{ associatedTaskDesc() }}</span>
+      }
+    </div>
   </div>
 </aw-side-drawer>
 

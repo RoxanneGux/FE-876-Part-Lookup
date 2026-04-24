@@ -93,6 +93,12 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  .field-desc {
+    display: block;
+    color: var(--system-text-text-secondary, #5b6670);
+    margin-left: 2px;
+  }
 }
 
 .filter-header {
