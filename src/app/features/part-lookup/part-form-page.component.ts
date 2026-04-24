@@ -54,7 +54,7 @@ import { AdvancedPartsLookupComponent } from './advanced-parts-lookup.component'
  *    ✓ Part field has visible <aw-form-field-label>Part</aw-form-field-label>
  *    ✓ Parts field has visible <aw-form-field-label>Parts</aw-form-field-label>
  *    ✓ All filter dropdowns have visible <aw-form-field-label> elements
- *    ✓ "Include XRefs" toggle has adjacent visible text label
+ *    ✓ "Include Cross References" filter has adjacent visible text label
  *
  * 4. Color Contrast
  *    ✓ Component library (aw-component-lib) handles contrast for standard

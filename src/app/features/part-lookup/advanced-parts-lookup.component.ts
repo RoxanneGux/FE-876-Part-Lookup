@@ -82,9 +82,9 @@ export class AdvancedPartsLookupComponent {
   // ── Xref Filter Options ──
 
   readonly xrefFilterOptions: SingleSelectOption[] = [
-    { label: 'Include Xref', value: 'include-xref' },
-    { label: 'Only Xref', value: 'only-xref' },
-    { label: 'No Xref', value: 'no-xref' },
+    { label: 'Include Cross Reference', value: 'include-xref' },
+    { label: 'Only Cross Reference', value: 'only-xref' },
+    { label: 'No Cross Reference', value: 'no-xref' },
     { label: 'Manuf Part Only', value: 'manuf-part-only' },
   ];
   readonly equipmentTypeFilter = signal<string[]>([]);

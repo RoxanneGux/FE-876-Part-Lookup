@@ -19,7 +19,7 @@ All data in this harness is mock. No API calls are made. This guide documents ev
 
 Flat list of parts displayed in the Simple Part Lookup Dialog.
 
-| Part ID | Description | Keyword | Cross-Ref | Cost |
+| Part ID | Description | Keyword | Cross Reference | Cost |
 |---------|-------------|---------|-----------|------|
 | PRT-OIL-001 | Oil Pump Assembly | Pump | OP-XREF-601 | $125.00 |
 | PRT-OIL-002 | Oil Pan Gasket Set | Gasket | OG-XREF-602 | $22.50 |
@@ -153,7 +153,7 @@ All lookups are case-insensitive. Empty or whitespace-only input hides the descr
 | Open the advanced part lookup (multi) | Click the "Lookup" button next to the Parts field |
 | Bridge from simple to advanced lookup | Open the simple dialog → click "Advanced Lookup" tertiary button → advanced lookup opens in the same mode |
 | Search parts in simple dialog | Open the simple dialog → type in the search bar to filter across Part ID, Description, Keyword, Cross-Ref, and Cost |
-| Filter parts in advanced lookup | Use the quick filters row (search, stock location, part, product category, include XRefs toggle) |
+| Filter parts in advanced lookup | Use the quick filters row (search, stock location, part, product category, include cross references dropdown) |
 | Open the side drawer filter panel | In the advanced lookup, click the filter icon button → side drawer opens with Equipment Type, Task Type, and Class Type dropdowns |
 | Clear all side drawer filters | In the side drawer filter panel, click "Clear All" |
 | Select a single part | Open any lookup in single-select mode → select a row (radio button) → click "Add" or "Select" |
