@@ -188,6 +188,10 @@ export function blurUppercase(value: string): string {
               (click)="openSimplePartLookup()">
               <aw-icon [iconName]="'search'" [iconColor]="''"></aw-icon>
             </button>
+            <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Open Parts Location Information" type="button"
+              (click)="onOpenPartLocationInfo()">
+              <aw-icon [iconName]="'open_in_new'" [iconColor]="''"></aw-icon>
+            </button>
             <button AwButton [buttonType]="'outlined'" type="button" aria-label="Open advanced part lookup"
               (click)="openAdvancedLookup('single')"><span>Lookup</span></button>
           </div>
@@ -230,6 +234,10 @@ export function blurUppercase(value: string): string {
             <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Open parts lookup" type="button"
               (click)="openSimplePartsLookup()">
               <aw-icon [iconName]="'search'" [iconColor]="''"></aw-icon>
+            </button>
+            <button AwButtonIconOnly [buttonType]="'primary'" ariaLabel="Open Parts Location Information" type="button"
+              (click)="onOpenPartLocationInfo()">
+              <aw-icon [iconName]="'open_in_new'" [iconColor]="''"></aw-icon>
             </button>
             <button AwButton [buttonType]="'outlined'" type="button" aria-label="Open advanced parts lookup"
               (click)="openAdvancedLookup('multi')"><span>Lookup</span></button>
@@ -562,6 +570,13 @@ export class PartFormPageComponent {
       this.partDescriptionError.set(result.isError);
     }
     // Multi-select: no single description to update
+  }
+
+  // ── Navigation ──
+
+  /** Placeholder for navigating to the Parts - Location Information screen. */
+  onOpenPartLocationInfo(): void {
+    alert('This would navigate to the Parts - Location Information screen.');
   }
 
   // ── Action Bar Handlers ──
